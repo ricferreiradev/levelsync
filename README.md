@@ -2,6 +2,12 @@
 
 LevelSync é um plugin de balanceamento vocal para Windows que ajusta suavemente o nível da voz em relação a um sidechain instrumental. O projeto gera os formatos **VST3** e **Standalone** com C++17, JUCE e CMake.
 
+## Download
+
+**[Baixar a versão mais recente do LevelSync](https://github.com/ricferreiradev/levelsync/releases/latest)**
+
+Na página de downloads estão disponíveis o aplicativo Standalone, o plugin VST3 em ZIP, o instalador para Windows e os checksums de verificação. Para consultar versões anteriores, acesse [todas as releases](https://github.com/ricferreiradev/levelsync/releases).
+
 > Estado do projeto: beta. Os testes automatizados cobrem o DSP, o processador e a interface, mas não substituem validação auditiva em uma DAW real.
 
 ## Recursos
