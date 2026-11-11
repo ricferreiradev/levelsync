@@ -97,7 +97,7 @@ O instalador requer privilégios administrativos porque grava no diretório VST3
 ## Instalação em uma DAW
 
 1. Feche instâncias existentes do LevelSync.
-2. Copie a pasta inteira `LevelSync.vst3` para `C:\Program Files\Common Files\VST3`.
+2. Copie a pasta inteira `LevelSync.vst3` para uma pasta VST3 escaneada pela sua DAW. No Windows, o local compartilhado padrão e recomendado é `C:\Program Files\Common Files\VST3`; se a DAW estiver configurada para usar outro diretório, utilize esse diretório ou adicione o caminho padrão ao scanner.
 3. Execute uma nova varredura de plugins VST3 na DAW.
 4. Insira o LevelSync na faixa de voz.
 5. Envie o bus ou faixa instrumental para o sidechain estéreo do plugin.

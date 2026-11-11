@@ -5,7 +5,7 @@ Este guia se aplica a DAWs Windows x64 que carreguem plugins VST3 e ofereçam ro
 ## Instalação
 
 1. Feche instâncias do LevelSync carregadas na DAW.
-2. Copie o bundle completo `LevelSync.vst3` para `C:\Program Files\Common Files\VST3`. A operação pode exigir privilégios administrativos.
+2. Copie o bundle completo `LevelSync.vst3` para uma pasta VST3 escaneada pela DAW. No Windows, o local compartilhado padrão e recomendado é `C:\Program Files\Common Files\VST3`; se a DAW usar outro diretório configurado, copie o bundle para ele ou adicione o caminho padrão ao scanner. A operação pode exigir privilégios administrativos.
 3. Abra a DAW, execute uma nova varredura VST3 e confirme que o LevelSync foi detectado.
 
 ## Roteamento
