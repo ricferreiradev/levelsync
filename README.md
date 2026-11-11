@@ -2,6 +2,8 @@
 
 LevelSync is a Windows vocal-balance processor that smoothly adjusts vocal gain against a stereo instrumental sidechain. The project builds **VST3** and **Standalone** formats with C++17, JUCE, and CMake.
 
+![LevelSync plugin interface showing loudness monitoring, balance history, automatic gain controls, and Music Silence Protection](Docs/images/levelsync-interface.png)
+
 ## Download
 
 **[Download the latest LevelSync release](https://github.com/ricferreiradev/levelsync/releases/latest)**
