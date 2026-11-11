@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - name: Checkout LevelSync
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Checkout JUCE 9.0.5
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: juce-framework/JUCE
           ref: 9.0.5
