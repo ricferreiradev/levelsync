@@ -8,6 +8,9 @@ Todas as alterações relevantes serão documentadas neste arquivo. O formato se
 
 - Estrutura de documentação e governança para publicação no GitHub.
 - Licença AGPL-3.0-or-later e avisos de terceiros.
+- Empacotamento ZIP para Standalone e VST3.
+- Instalador VST3 para Windows com Inno Setup.
+- Publicação automática de releases a partir de tags versionadas.
 
 ## [0.5.0] - 2026-11-11
 

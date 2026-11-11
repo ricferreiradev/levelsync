@@ -4,7 +4,7 @@
 
 Comparar estabilidade, erro de balanço, movimento de ganho e comportamento transitório em condições reproduzíveis. Os plugins podem usar detectores, janelas e estratégias de controle diferentes; o protocolo mede resultados e não presume equivalência interna nem superioridade.
 
-## Preparação da sessão no Cakewalk Sonar
+## Preparação da sessão na DAW
 
 1. Use uma cópia da sessão e desative normalização automática, outros riders, compressores e automações de volume que afetem o teste.
 2. Escolha uma faixa vocal e um stem instrumental sem alterações entre as comparações. Anote sample rate, buffer, pan law e níveis dos faders.
@@ -58,4 +58,4 @@ Faça comparação cega com loudness de saída igualado, sem clipping. Avalie in
 
 ## Relatório
 
-Inclua versão de cada plugin, versão do Sonar, hardware, sample rate, buffer, renderização online/offline, parâmetros, roteamento, arquivos analisados e scripts/ferramentas usados. Resultados só valem para o material e as configurações testadas. Não generalize uma vitória sem repetir o protocolo em materiais diversos.
+Inclua versão de cada plugin, nome e versão da DAW, hardware, sample rate, buffer, renderização online/offline, parâmetros, roteamento, arquivos analisados e scripts/ferramentas usados. Resultados só valem para o material e as configurações testadas. Não generalize uma vitória sem repetir o protocolo em materiais diversos.

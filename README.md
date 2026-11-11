@@ -49,15 +49,54 @@ Artefatos gerados:
 - VST3: `build/LevelSync_artefacts/Release/VST3/LevelSync.vst3`
 - Standalone: `build/LevelSync_artefacts/Release/Standalone/LevelSync.exe`
 
-## Instalação no Cakewalk Sonar
+## Pacotes de release
+
+O repositório possui um workflow separado que publica releases ao receber uma tag no formato `vMAJOR.MINOR.PATCH`. A versão da tag deve ser igual à versão declarada em `CMakeLists.txt`.
+
+Exemplo para a versão atual:
+
+```powershell
+git tag -a v0.5.0 -m "LevelSync 0.5.0"
+git push origin v0.5.0
+```
+
+Depois do build e dos testes, a GitHub Release recebe:
+
+- `LevelSync-0.5.0-Standalone-Windows-x64.zip`
+- `LevelSync-0.5.0-VST3-Windows-x64.zip`
+- `LevelSync-0.5.0-VST3-Setup-Windows-x64.exe`
+- `SHA256SUMS.txt`
+
+Os ZIPs incluem `LICENSE`, `NOTICE`, `README.md` e `THIRD_PARTY_NOTICES.md`. O ZIP VST3 preserva a pasta completa `LevelSync.vst3`; não extraia somente o binário interno.
+
+Para gerar os ZIPs localmente depois do build:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass `
+  -File Packaging/CreateReleasePackages.ps1 `
+  -BuildDirectory ./build -OutputDirectory ./release -Version 0.5.0
+```
+
+Para compilar o instalador, instale o Inno Setup e execute:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass `
+  -File Packaging/BuildInnoInstaller.ps1 `
+  -BuildDirectory ./build -OutputDirectory ./release -Version 0.5.0 `
+  -RepositoryUrl "https://github.com/SEU-USUARIO/LevelSync"
+```
+
+O instalador requer privilégios administrativos porque grava no diretório VST3 compartilhado do Windows. Builds locais e do CI não são assinados digitalmente por padrão; uma release pública pode exibir aviso do Microsoft Defender SmartScreen até que seja configurado um certificado de assinatura de código.
+
+## Instalação em uma DAW
 
 1. Feche instâncias existentes do LevelSync.
 2. Copie a pasta inteira `LevelSync.vst3` para `C:\Program Files\Common Files\VST3`.
-3. Execute uma nova varredura de plugins no Sonar.
+3. Execute uma nova varredura de plugins VST3 na DAW.
 4. Insira o LevelSync na faixa de voz.
 5. Envie o bus ou faixa instrumental para o sidechain estéreo do plugin.
 
-O sidechain é somente leitura e nunca é misturado à saída vocal. Consulte [o guia completo de instalação e validação](Docs/SonarInstallationAndValidation.md).
+O sidechain é somente leitura e nunca é misturado à saída vocal. Consulte [o guia completo de instalação e validação](Docs/DAWInstallationAndValidation.md).
 
 ## Uso básico
 
@@ -86,11 +125,12 @@ Sidechain musical ───────┴─► Silence + Spectral Analysis
 ## Documentação
 
 - [Music Silence Protection](Docs/MusicSilenceProtection.md)
-- [Instalação e validação no Sonar](Docs/SonarInstallationAndValidation.md)
+- [Instalação e validação em DAWs](Docs/DAWInstallationAndValidation.md)
 - [Metodologia de desempenho](Docs/PerformanceMethodology.md)
 - [Protocolo de comparação](Docs/ComparisonProtocol.md)
 - [Relatório de validação](Docs/ValidationReport.md)
 - [Checklist de release](Docs/ReleaseChecklist.md)
+- [Empacotamento e publicação](Packaging/README.md)
 - [Como contribuir](CONTRIBUTING.md)
 - [Política de segurança](SECURITY.md)
 - [Changelog](CHANGELOG.md)

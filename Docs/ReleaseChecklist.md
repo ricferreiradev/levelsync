@@ -7,7 +7,7 @@
 - [ ] Compilar `LevelSync_VST3` e `LevelSync_Standalone`.
 - [ ] Executar CTest com zero falhas.
 - [ ] Abrir o Standalone e inspecionar a interface em 100% e escala DPI elevada.
-- [ ] Validar VST3 no Cakewalk Sonar com sidechain real.
+- [ ] Validar VST3 em pelo menos uma DAW compatível com sidechain real.
 - [ ] Testar 44,1/48/96 kHz e buffers usados na validação manual.
 
 ## Distribuição AGPL
@@ -18,11 +18,16 @@
 - [ ] Incluir scripts CMake e informações suficientes para reproduzir o build.
 - [ ] Não incluir arquivos proprietários, projetos de DAW ou áudio sem autorização.
 - [ ] Publicar checksums dos artefatos.
+- [ ] Confirmar que os ZIPs contêm licença, avisos e a estrutura correta dos binários.
+- [ ] Compilar o instalador Inno Setup e revisar o log sem executar uma instalação destrutiva.
+- [ ] Assinar digitalmente o instalador, caso exista certificado configurado para a release.
 
 ## GitHub
 
 - [ ] Criar uma tag assinada no formato `vX.Y.Z`.
 - [ ] Anexar a pasta `LevelSync.vst3` compactada sem alterar sua estrutura.
 - [ ] Anexar o Standalone separadamente.
+- [ ] Anexar o instalador VST3 `.exe` gerado pelo Inno Setup.
+- [ ] Anexar `SHA256SUMS.txt` e conferir os hashes publicados.
 - [ ] Copiar notas relevantes do changelog para a release.
 - [ ] Informar claramente que testes automatizados não equivalem a validação em todas as DAWs.

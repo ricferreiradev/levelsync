@@ -33,6 +33,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 O build usa bibliotecas fornecidas pelo Windows SDK e pelo runtime do Microsoft Visual C++. Esses componentes são distribuídos segundo os termos da Microsoft e não fazem parte do código-fonte do LevelSync.
 
+## Inno Setup
+
+O instalador VST3 para Windows é compilado com Inno Setup. O compilador não é incorporado ao repositório; apenas o instalador gerado é distribuído.
+
+Copyright © 1997–2026 Jordan Russell e contribuidores do Inno Setup.
+
+- Site e downloads: <https://jrsoftware.org/isinfo.php>
+- Licença do Inno Setup 6: <https://jrsoftware.org/files/is6-license.txt>
+- Licença do Inno Setup 7: <https://jrsoftware.org/files/is7-license.txt>
+
+Quem reutilizar o workflow deve revisar os termos da versão do Inno Setup instalada, especialmente em uso comercial.
+
 ## Marcas
 
-JUCE, VST, VST3, Cakewalk e Sonar pertencem a seus respectivos titulares. O uso dos nomes neste repositório serve apenas para identificar compatibilidade e não implica endosso.
+JUCE, VST, VST3 e as marcas das DAWs mencionadas pertencem a seus respectivos titulares. O uso dos nomes neste repositório serve apenas para identificar compatibilidade e não implica endosso.

@@ -35,11 +35,11 @@ Nenhum teste automatizado na execução final.
 
 ## Não executados neste ambiente
 
-- Descoberta e carregamento pelo scanner do Cakewalk Sonar.
-- Exposição e roteamento real do sidechain no Sonar.
+- Descoberta e carregamento pelo scanner de uma DAW compatível com VST3.
+- Exposição e roteamento real do sidechain na DAW.
 - Automação gravada e reproduzida pelo host.
 - Comparação entre playback e renderização offline no host.
-- Restauração depois de fechar e reabrir uma sessão real do Sonar.
+- Restauração depois de fechar e reabrir uma sessão real da DAW.
 - Comparação com Waves Vocal Rider em material musical.
 - Avaliação auditiva, clipping intersample e uso de CPU em uma sessão real.
 
