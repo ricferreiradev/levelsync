@@ -111,12 +111,12 @@ jobs:
 
           LevelSync is an automatic vocal-balance processor for Windows, available as VST3 and Standalone.
 
-          ### What's new in v0.5.1
+          ### What's new in v0.5.2
 
-          - More compact interface with improved use of screen space.
-          - Reorganized monitoring and Learn Balance panels.
-          - Fixed spacing and clipping in Music Silence Protection controls.
-          - English GitHub documentation with English and Brazilian Portuguese user manuals.
+          - Write the calculated gain to the DAW as editable Rider Gain automation.
+          - Read edited Rider Gain automation without fighting the automatic controller.
+          - Click-free 20 ms playback smoothing and reduced 25 Hz automation point rate.
+          - Updated English and Brazilian Portuguese documentation.
 
           ### Downloads
 
@@ -128,7 +128,7 @@ jobs:
           ### Documentation
 
           - [User Manual - English](https://github.com/$repository/releases/download/$tag/LevelSync-User-Manual-EN.pdf)
-          - [Manual do Usuário - Português](https://github.com/$repository/releases/download/$tag/LevelSync-Manual-do-Usuario-PT-BR.pdf)
+          - [User Manual - Brazilian Portuguese](https://github.com/$repository/releases/download/$tag/LevelSync-Manual-do-Usuario-PT-BR.pdf)
 
           ### Notes
 

@@ -32,6 +32,8 @@ private:
     std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, 17> attachments;
     juce::ComboBox perceptualMode;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> perceptualModeAttachment;
+    juce::ComboBox automationMode;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> automationModeAttachment;
     juce::ToggleButton enable{"Enable"};
     juce::ToggleButton musicSilenceEnable{"Protection Enabled"};
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> enableAttachment;

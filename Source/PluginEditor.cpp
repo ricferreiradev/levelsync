@@ -45,6 +45,10 @@ LevelSyncAudioProcessorEditor::LevelSyncAudioProcessorEditor(LevelSyncAudioProce
     perceptualMode.addItemList({"Off", "Gentle", "Balanced", "Strong"}, 1);
     perceptualModeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(
         processor.parameters, "perceptualMode", perceptualMode);
+    addAndMakeVisible(automationMode);
+    automationMode.addItemList({"Automation Off", "Automation Write", "Automation Read"}, 1);
+    automationModeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(
+        processor.parameters, "automationMode", automationMode);
 
     enableAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(
         processor.parameters, "enable", enable);
@@ -104,6 +108,7 @@ void LevelSyncAudioProcessorEditor::configureSlider(std::size_t index, const cha
 void LevelSyncAudioProcessorEditor::timerCallback()
 {
     processor.commitPendingLearningResult();
+    processor.serviceAutomationHost();
     levelsync::TelemetryFrame frame;
     while (processor.popTelemetry(frame))
     {
@@ -349,6 +354,7 @@ void LevelSyncAudioProcessorEditor::resized()
     enable.setBounds(header.removeFromRight(90).reduced(2, 8));
     diagnosticsButton.setBounds(header.removeFromRight(105).reduced(2, 8));
     licenseButton.setBounds(header.removeFromRight(78).reduced(2, 8));
+    automationMode.setBounds(header.removeFromRight(142).reduced(2, 6));
 
     const int gap = 8;
     auto monitor = bounds.removeFromTop(90);

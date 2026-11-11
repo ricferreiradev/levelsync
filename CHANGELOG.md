@@ -4,13 +4,17 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-11-11
+
 ### Added
 
-- English user manual while retaining the Brazilian Portuguese edition.
+- Write Automation mode that publishes calculated correction to the host as the editable `Rider Gain` parameter.
+- Read Automation mode that reproduces host automation without competing with the automatic controller.
+- English and Brazilian Portuguese automation documentation.
 
 ### Changed
 
-- GitHub-facing documentation is now written in English.
+- User manuals updated for automation recording and playback.
 
 ## [0.5.1] - 2026-11-11
 

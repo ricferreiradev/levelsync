@@ -25,6 +25,7 @@ DAWs expose auxiliary buses differently. A host without VST3 sidechain support c
 5. Automate each parameter, save, close, and reopen the project. Confirm parameters and learned reference.
 6. Repeat at 44.1, 48, and 96 kHz with small and large buffers. Compare offline rendering with real-time playback.
 7. Close the GUI during playback and rendering; audio must continue normally.
+8. Record `Rider Gain` in Automation Write, switch the host and plugin to Read, edit several points, and confirm that playback follows the edited curve without the automatic controller overwriting it.
 
 ## Validation status
 

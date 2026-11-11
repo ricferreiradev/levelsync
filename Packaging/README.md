@@ -21,7 +21,7 @@ powershell -NoProfile -ExecutionPolicy Bypass `
   -File Packaging/CreateReleasePackages.ps1 `
   -BuildDirectory ./build `
   -OutputDirectory ./release `
-  -Version 0.5.1
+  -Version 0.5.2
 ```
 
 The script fails if binaries or required legal documents are missing. The VST3 remains a bundle containing `Contents/Resources` and `Contents/x86_64-win` inside `LevelSync.vst3`.
@@ -35,7 +35,7 @@ powershell -NoProfile -ExecutionPolicy Bypass `
   -File Packaging/BuildInnoInstaller.ps1 `
   -BuildDirectory ./build `
   -OutputDirectory ./release `
-  -Version 0.5.1 `
+  -Version 0.5.2 `
   -RepositoryUrl "https://github.com/ricferreiradev/levelsync"
 ```
 

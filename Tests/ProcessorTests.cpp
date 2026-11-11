@@ -28,7 +28,7 @@ int main()
     run("APVTS defaults, ranges and persistence", []
     {
         LevelSyncAudioProcessor processor;
-        require(processor.getParameters().size() == 20, "twenty automated parameters");
+        require(processor.getParameters().size() == 22, "twenty-two automated parameters");
         near(processor.parameters.getRawParameterValue("offset")->load(), 3.0, 0.0, "default offset");
         near(processor.parameters.getRawParameterValue("attack")->load(), 250.0, 0.0, "default attack");
         near(processor.parameters.getRawParameterValue("release")->load(), 700.0, 0.0, "default release");
@@ -48,12 +48,18 @@ int main()
              "music silence return default");
         near(processor.parameters.getRawParameterValue("musicSilenceEnable")->load(), 1.0, 0.0,
              "music silence protection enabled by default");
+        near(processor.parameters.getRawParameterValue("automationMode")->load(), 0.0, 0.0,
+             "automation mode defaults off");
+        near(processor.parameters.getRawParameterValue("riderGain")->load(), 0.0, 0.0,
+             "rider gain defaults to unity");
         set(processor, "offset", -7.3f);
         set(processor, "attack", 1234.0f);
         set(processor, "enable", 0.0f);
         set(processor, "perceptualMode", 2.0f);
         set(processor, "perceptualStrength", 73.0f);
         set(processor, "musicSilenceThreshold", -61.0f);
+        set(processor, "automationMode", 2.0f);
+        set(processor, "riderGain", -4.25f);
         juce::MemoryBlock state;
         processor.getStateInformation(state);
         require(state.getSize() > 0, "non-empty state");
@@ -66,6 +72,10 @@ int main()
         near(restored.parameters.getRawParameterValue("perceptualStrength")->load(), 73.0, 0.01, "perceptual strength restored");
         near(restored.parameters.getRawParameterValue("musicSilenceThreshold")->load(), -61.0, 0.01,
              "music silence threshold restored");
+        near(restored.parameters.getRawParameterValue("automationMode")->load(), 2.0, 0.0,
+             "automation mode restored");
+        near(restored.parameters.getRawParameterValue("riderGain")->load(), -4.25, 0.01,
+             "rider gain restored");
         restored.setStateInformation(nullptr, 0);
         const char invalid[] = "invalid";
         restored.setStateInformation(invalid, sizeof(invalid));
@@ -184,6 +194,61 @@ int main()
         processor.processBlock(buffer, midi);
         require(std::isfinite(buffer.getSample(0, 0)), "invalid main input sanitised");
         require(std::isinf(buffer.getSample(1, 0)), "invalid sidechain is still read-only");
+    }, failures);
+
+    run("Write publishes Rider Gain and Read reproduces editable host automation", []
+    {
+        LevelSyncAudioProcessor processor;
+        configure(processor, 1, true);
+        processor.prepareToPlay(48000.0, 64);
+        set(processor, "automationMode", 1.0f);
+        juce::AudioBuffer<float> buffer(3, 64);
+        juce::MidiBuffer midi;
+        int sample = 0;
+        for (int block = 0; block < 2200; ++block)
+        {
+            for (int i = 0; i < buffer.getNumSamples(); ++i, ++sample)
+            {
+                const float vocal = 0.02f * std::sin(2.0f * juce::MathConstants<float>::pi * 997.0f
+                                                     * static_cast<float>(sample) / 48000.0f);
+                const float music = 0.10f * std::sin(2.0f * juce::MathConstants<float>::pi * 431.0f
+                                                     * static_cast<float>(sample) / 48000.0f);
+                buffer.setSample(0, i, vocal);
+                buffer.setSample(1, i, music);
+                buffer.setSample(2, i, music);
+            }
+            processor.processBlock(buffer, midi);
+            processor.serviceAutomationHost();
+        }
+        require(processor.parameters.getRawParameterValue("riderGain")->load() > 5.0f,
+                "Write publishes calculated gain to automatable Rider Gain");
+
+        set(processor, "automationMode", 2.0f);
+        set(processor, "riderGain", -6.0f);
+        float finalInput = 0.0f, finalOutput = 0.0f;
+        for (int block = 0; block < 120; ++block)
+        {
+            for (int i = 0; i < buffer.getNumSamples(); ++i, ++sample)
+            {
+                const float vocal = 0.1f * std::sin(2.0f * juce::MathConstants<float>::pi * 997.0f
+                                                    * static_cast<float>(sample) / 48000.0f);
+                const float music = 0.05f * std::sin(2.0f * juce::MathConstants<float>::pi * 431.0f
+                                                    * static_cast<float>(sample) / 48000.0f);
+                buffer.setSample(0, i, vocal);
+                buffer.setSample(1, i, music);
+                buffer.setSample(2, i, music);
+                finalInput = vocal;
+            }
+            processor.processBlock(buffer, midi);
+            finalOutput = buffer.getSample(0, buffer.getNumSamples() - 1);
+            processor.serviceAutomationHost();
+        }
+        const float expectedGain = juce::Decibels::decibelsToGain(-6.0f);
+        near(finalOutput, finalInput * expectedGain, 2.0e-4, "Read applies host Rider Gain curve");
+        near(processor.getMeters().gainDb.load(), -6.0, 0.01, "Read meter follows Rider Gain");
+
+        set(processor, "automationMode", 0.0f);
+        processor.serviceAutomationHost();
     }, failures);
 
     run("Learn Balance completes, commits parameter, and persists versioned reference", []

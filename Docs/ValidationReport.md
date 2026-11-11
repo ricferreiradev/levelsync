@@ -49,5 +49,6 @@ No automated test failed in the final run.
 - Energy-based vocal detection can respond to bleed, noise, and other sounds.
 - There is no limiter or true-peak protection; positive gain requires downstream headroom.
 - Automation is read once per block, without per-sample accuracy.
+- Version 0.5.2 automation writing requires separate real-host validation; the historical results above predate that feature.
 - Visual history exists while the editor is open. If the GUI does not consume a full queue, new frames are discarded without affecting DSP.
 - Telemetry and metrics are observational and do not participate in audio control.

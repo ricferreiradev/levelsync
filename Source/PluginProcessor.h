@@ -4,12 +4,16 @@
 #include "DSP/BalanceEngine.h"
 #include "DSP/TelemetryQueue.h"
 #include <atomic>
+#include <limits>
 
 class LevelSyncAudioProcessor final : public juce::AudioProcessor,
                                       private juce::AsyncUpdater
 {
 public:
+    enum class AutomationMode : int { off, write, read };
+
     LevelSyncAudioProcessor();
+    ~LevelSyncAudioProcessor() override;
 
     void prepareToPlay(double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
@@ -61,6 +65,9 @@ public:
     float getLearnedReferenceDb() const noexcept { return learnedReferenceDb.load(std::memory_order_acquire); }
     // Message-thread hook used by the editor timer and headless hosts/tests.
     void commitPendingLearningResult();
+    // Publishes queued Rider Gain values and automation gestures to the host.
+    // This must run outside the real-time audio callback.
+    void serviceAutomationHost();
     bool popTelemetry(levelsync::TelemetryFrame& frame) noexcept { return telemetry.pop(frame); }
     void discardPendingTelemetry() noexcept { telemetry.discardPending(); }
 
@@ -71,7 +78,7 @@ private:
     levelsync::BalanceEngine engine;
     Meters meters;
     // Cached once; no map lookups or ValueTree access on the audio thread.
-    std::array<std::atomic<float>*, 20> parameterValues{};
+    std::array<std::atomic<float>*, 22> parameterValues{};
     levelsync::TelemetryQueue<512> telemetry;
     int telemetryCountdown = 1, telemetryInterval = 1920;
     std::atomic<int> learnCommand{0};
@@ -84,6 +91,12 @@ private:
     levelsync::SpectralReference pendingSpectralReference;
     levelsync::SpectralReference restoredSpectralReference;
     bool learnCompletionPublished = false;
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> readGainDb;
+    std::atomic<float> pendingRiderGainDb{0.0f};
+    std::atomic<bool> pendingAutomationWrite{false};
+    float lastQueuedRiderGainDb = std::numeric_limits<float>::infinity();
+    int lastAudioAutomationMode = 0;
+    bool automationGestureActive = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LevelSyncAudioProcessor)
 };

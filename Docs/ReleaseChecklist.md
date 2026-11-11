@@ -9,6 +9,7 @@
 - [ ] Open Standalone and inspect the interface at 100% and high DPI scaling.
 - [ ] Validate VST3 in at least one DAW with a real sidechain.
 - [ ] Test 44.1/48/96 kHz and the buffer sizes used for manual validation.
+- [ ] Record, edit, and replay `Rider Gain` automation in at least one DAW; confirm that Write and Read do not fight each other.
 
 ## AGPL distribution
 

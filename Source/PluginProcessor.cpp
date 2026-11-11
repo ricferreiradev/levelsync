@@ -3,12 +3,13 @@
 
 namespace
 {
-constexpr int stateVersion = 5;
-constexpr std::array<const char*, 20> parameterIds{
+constexpr int stateVersion = 6;
+constexpr std::array<const char*, 22> parameterIds{
     "offset", "attack", "release", "maxBoost", "maxCut", "strength", "deadband",
     "vocalThreshold", "vocalHold", "silenceReturn", "perceptualMode", "perceptualStrength",
     "maxPerceptualBoost", "maskingResponse", "musicSilenceThreshold", "musicSilenceHold",
-    "musicSilenceRelease", "musicSilenceReturn", "musicSilenceEnable", "enable"};
+    "musicSilenceRelease", "musicSilenceReturn", "musicSilenceEnable", "enable",
+    "automationMode", "riderGain"};
 
 juce::String serialiseProfile(const std::array<float, levelsync::spectralBandCount>& profile)
 {
@@ -41,6 +42,14 @@ LevelSyncAudioProcessor::LevelSyncAudioProcessor()
 {
     for (std::size_t i = 0; i < parameterIds.size(); ++i)
         parameterValues[i] = parameters.getRawParameterValue(parameterIds[i]);
+}
+
+LevelSyncAudioProcessor::~LevelSyncAudioProcessor()
+{
+    cancelPendingUpdate();
+    if (automationGestureActive)
+        if (auto* parameter = parameters.getParameter("riderGain"))
+            parameter->endChangeGesture();
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout LevelSyncAudioProcessor::createParameterLayout()
@@ -76,6 +85,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout LevelSyncAudioProcessor::cre
     layout.add(std::make_unique<juce::AudioParameterBool>(
         juce::ParameterID{"musicSilenceEnable", 1}, "Music Silence Protection", true));
     layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID{"enable", 1}, "Enable", true));
+    layout.add(std::make_unique<juce::AudioParameterChoice>(
+        juce::ParameterID{"automationMode", 1}, "Automation Mode",
+        juce::StringArray{"Off", "Write", "Read"}, 0));
+    addFloat("riderGain", "Rider Gain", -12.0f, 12.0f, 0.0f, "dB", 0.01f);
     return layout;
 }
 
@@ -85,6 +98,11 @@ void LevelSyncAudioProcessor::prepareToPlay(double sampleRate, int)
     telemetryInterval = std::max(1, static_cast<int>(std::lround(sampleRate / 25.0)));
     telemetryCountdown = telemetryInterval;
     telemetry.discardPending();
+    readGainDb.reset(sampleRate, 0.02);
+    readGainDb.setCurrentAndTargetValue(0.0f);
+    pendingAutomationWrite.store(false, std::memory_order_relaxed);
+    lastQueuedRiderGainDb = std::numeric_limits<float>::infinity();
+    lastAudioAutomationMode = 0;
     engine.setStoredReference(learnedReferenceDb.load(std::memory_order_acquire),
                               learnedReferenceValid.load(std::memory_order_acquire));
     engine.setSpectralReference(storedSpectralReference);
@@ -172,8 +190,25 @@ void LevelSyncAudioProcessor::process(juce::AudioBuffer<float>& buffer,
     settings.musicSilence.releaseMs = value(16);
     settings.musicSilenceReturnMs = value(17);
     settings.musicSilence.enabled = value(18) >= 0.5f;
-    settings.balance.enabled = !bypassed && value(19) >= 0.5f;
+    const auto automationMode = static_cast<AutomationMode>(
+        std::clamp(static_cast<int>(std::lround(value(20))), 0, 2));
+    const bool enabled = !bypassed && value(19) >= 0.5f;
+    const bool readAutomation = enabled && automationMode == AutomationMode::read;
+    settings.balance.enabled = enabled && !readAutomation;
     engine.setSettings(settings);
+
+    const float riderTargetDb = std::clamp(value(21), -12.0f, 12.0f);
+    if (readAutomation)
+        readGainDb.setTargetValue(riderTargetDb);
+    else
+        readGainDb.setCurrentAndTargetValue(riderTargetDb);
+
+    const int modeValue = static_cast<int>(automationMode);
+    if (modeValue != lastAudioAutomationMode)
+    {
+        lastAudioAutomationMode = modeValue;
+        triggerAsyncUpdate();
+    }
 
     if (referenceRestorePending.exchange(false, std::memory_order_acq_rel))
     {
@@ -200,15 +235,27 @@ void LevelSyncAudioProcessor::process(juce::AudioBuffer<float>& buffer,
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
         std::array<float, 2> v{};
+        std::array<float, 2> originalVocal{};
         std::array<float, 2> m{};
         for (int ch = 0; ch < channels; ++ch)
+        {
             v[static_cast<std::size_t>(ch)] = vocal.getSample(ch, sample);
+            originalVocal[static_cast<std::size_t>(ch)] = v[static_cast<std::size_t>(ch)];
+        }
         if (sidechainPresent)
             for (int ch = 0; ch < 2; ++ch)
                 m[static_cast<std::size_t>(ch)] = instrumental.getSample(ch, sample);
 
         // Measure pre-gain audio, then write exclusively to the main bus.
         engine.processSample(v, m, sidechainPresent);
+        float effectiveGainDb = 0.0f;
+        if (readAutomation)
+        {
+            effectiveGainDb = readGainDb.getNextValue();
+            const float gain = juce::Decibels::decibelsToGain(effectiveGainDb);
+            for (int ch = 0; ch < channels; ++ch)
+                v[static_cast<std::size_t>(ch)] = originalVocal[static_cast<std::size_t>(ch)] * gain;
+        }
         for (int ch = 0; ch < channels; ++ch)
             vocal.setSample(ch, sample, v[static_cast<std::size_t>(ch)]);
 
@@ -219,8 +266,8 @@ void LevelSyncAudioProcessor::process(juce::AudioBuffer<float>& buffer,
             levelsync::TelemetryFrame frame;
             frame.voiceDb = live.voice.db;
             frame.musicDb = live.music.db;
-            frame.appliedGainDb = live.gainDb;
-            frame.outputVoiceDb = live.voice.db + live.gainDb;
+            frame.appliedGainDb = readAutomation ? effectiveGainDb : live.gainDb;
+            frame.outputVoiceDb = live.voice.db + frame.appliedGainDb;
             frame.currentBalanceDb = live.voice.db - live.music.db;
             frame.targetBalanceDb = settings.balance.offsetDb;
             frame.balanceErrorDb = frame.targetBalanceDb
@@ -243,14 +290,26 @@ void LevelSyncAudioProcessor::process(juce::AudioBuffer<float>& buffer,
             frame.competition = live.competition;
             frame.referenceCompetition = live.referenceCompetition;
             telemetry.push(frame);
+
+            if (enabled && automationMode == AutomationMode::write
+                && (!std::isfinite(lastQueuedRiderGainDb)
+                    || std::abs(live.gainDb - lastQueuedRiderGainDb) >= 0.05f))
+            {
+                lastQueuedRiderGainDb = live.gainDb;
+                pendingRiderGainDb.store(live.gainDb, std::memory_order_relaxed);
+                pendingAutomationWrite.store(true, std::memory_order_release);
+                triggerAsyncUpdate();
+            }
         }
     }
 
     const auto snapshot = engine.snapshot();
     meters.voiceDb.store(snapshot.voice.db, std::memory_order_relaxed);
     meters.musicDb.store(snapshot.music.db, std::memory_order_relaxed);
-    meters.gainDb.store(snapshot.gainDb, std::memory_order_relaxed);
-    meters.targetGainDb.store(snapshot.targetGainDb, std::memory_order_relaxed);
+    const float displayedGainDb = readAutomation ? readGainDb.getCurrentValue() : snapshot.gainDb;
+    meters.gainDb.store(displayedGainDb, std::memory_order_relaxed);
+    meters.targetGainDb.store(readAutomation ? riderTargetDb : snapshot.targetGainDb,
+                              std::memory_order_relaxed);
     meters.balanceErrorDb.store(snapshot.balanceErrorDb, std::memory_order_relaxed);
     meters.vocalActive.store(snapshot.vocalActive, std::memory_order_relaxed);
     meters.sidechainValid.store(snapshot.sidechainValid, std::memory_order_relaxed);
@@ -281,6 +340,36 @@ void LevelSyncAudioProcessor::process(juce::AudioBuffer<float>& buffer,
 void LevelSyncAudioProcessor::handleAsyncUpdate()
 {
     commitPendingLearningResult();
+    serviceAutomationHost();
+}
+
+void LevelSyncAudioProcessor::serviceAutomationHost()
+{
+    auto* parameter = parameters.getParameter("riderGain");
+    const auto* modeValue = parameters.getRawParameterValue("automationMode");
+    if (parameter == nullptr || modeValue == nullptr)
+        return;
+
+    const bool writing = static_cast<int>(std::lround(modeValue->load(std::memory_order_relaxed)))
+                         == static_cast<int>(AutomationMode::write);
+    if (writing && !automationGestureActive)
+    {
+        parameter->beginChangeGesture();
+        automationGestureActive = true;
+    }
+    else if (!writing && automationGestureActive)
+    {
+        parameter->endChangeGesture();
+        automationGestureActive = false;
+        pendingAutomationWrite.store(false, std::memory_order_release);
+    }
+
+    if (writing && pendingAutomationWrite.exchange(false, std::memory_order_acq_rel))
+    {
+        const float gainDb = std::clamp(pendingRiderGainDb.load(std::memory_order_relaxed),
+                                        -12.0f, 12.0f);
+        parameter->setValueNotifyingHost(parameter->convertTo0to1(gainDb));
+    }
 }
 
 void LevelSyncAudioProcessor::commitPendingLearningResult()

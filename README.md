@@ -14,6 +14,8 @@ The downloads page provides the Standalone application, a VST3 ZIP package, a Wi
 
 - [User Manual - English](output/pdf/LevelSync-User-Manual-EN.pdf)
 - [Manual do Usuário - Português](output/pdf/LevelSync-Manual-do-Usuario-PT-BR.pdf)
+- [Writing and reading DAW automation](Docs/Automation.md)
+- [Automação na DAW - Português](Docs/pt-BR/Automation.md)
 - [DAW installation and validation](Docs/DAWInstallationAndValidation.md)
 - [Music Silence Protection](Docs/MusicSilenceProtection.md)
 - [Performance methodology](Docs/PerformanceMethodology.md)
@@ -33,6 +35,7 @@ The downloads page provides the Standalone application, a VST3 ZIP package, a Wi
 - Resizable interface with history, meters, and diagnostics.
 - Real-time processing without mutexes or allocations after `prepareToPlay()`.
 - VST3 and Standalone builds using the same processor and editor.
+- Write/Read automation workflow through an editable `Rider Gain` DAW parameter.
 
 ## Requirements
 
@@ -70,15 +73,15 @@ Generated artifacts:
 The release workflow runs for tags matching `vMAJOR.MINOR.PATCH`. The tag version must match `CMakeLists.txt`.
 
 ```powershell
-git tag -a v0.5.1 -m "LevelSync 0.5.1"
-git push origin v0.5.1
+git tag -a v0.5.2 -m "LevelSync 0.5.2"
+git push origin v0.5.2
 ```
 
 The release contains:
 
-- `LevelSync-0.5.1-Standalone-Windows-x64.zip`
-- `LevelSync-0.5.1-VST3-Windows-x64.zip`
-- `LevelSync-0.5.1-VST3-Setup-Windows-x64.exe`
+- `LevelSync-0.5.2-Standalone-Windows-x64.zip`
+- `LevelSync-0.5.2-VST3-Windows-x64.zip`
+- `LevelSync-0.5.2-VST3-Setup-Windows-x64.exe`
 - `SHA256SUMS.txt`
 
 The ZIP packages include `LICENSE`, `NOTICE`, `README.md`, and `THIRD_PARTY_NOTICES.md`. The VST3 ZIP preserves the complete `LevelSync.vst3` bundle; do not extract only its internal binary.
@@ -88,11 +91,11 @@ To build packages locally:
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass `
   -File Packaging/CreateReleasePackages.ps1 `
-  -BuildDirectory ./build -OutputDirectory ./release -Version 0.5.1
+  -BuildDirectory ./build -OutputDirectory ./release -Version 0.5.2
 
 powershell -NoProfile -ExecutionPolicy Bypass `
   -File Packaging/BuildInnoInstaller.ps1 `
-  -BuildDirectory ./build -OutputDirectory ./release -Version 0.5.1 `
+  -BuildDirectory ./build -OutputDirectory ./release -Version 0.5.2 `
   -RepositoryUrl "https://github.com/ricferreiradev/levelsync"
 ```
 
@@ -115,6 +118,16 @@ The sidechain is read-only and is never mixed into the vocal output. See the [co
 3. Set `Target Balance`, gain limits, attack, and release.
 4. Optionally establish a suitable manual balance and run `Learn Balance`.
 5. Keep Music Silence Protection enabled to preserve the original vocal level during instrumental stops.
+
+## DAW automation
+
+The header automation selector provides three modes:
+
+- **Automation Off:** LevelSync calculates and applies gain internally, as in earlier versions.
+- **Automation Write:** LevelSync applies its correction and publishes it to the host's automatable `Rider Gain` parameter at up to 25 updates per second. Put the `Rider Gain` lane in Write, Touch, or Latch mode in the DAW, play the song, then switch the host to Read.
+- **Automation Read:** LevelSync stops using the automatic controller for output gain and follows the DAW's `Rider Gain` curve with a 20 ms click-free ramp.
+
+The host owns the recorded automation, so points can be edited, simplified, copied, or deleted outside the plugin. Host support varies; see the [automation guide](Docs/Automation.md).
 
 Displayed loudness values are 400 ms K-weighted estimates. They are not normative integrated or short-term LUFS measurements.
 
@@ -144,7 +157,7 @@ Instrumental sidechain --------> Silence + Spectral Analysis
 - Only Windows x64 is currently configured.
 - The plugin does not perform source separation; noise and bleed can affect detectors.
 - Positive gain can exceed 0 dBFS. Preserve headroom in the processing chain.
-- Automation is read once per block, not sample-accurately.
+- Host automation is read once per block and smoothed; it is not sample-accurate.
 - Standalone has no separate instrumental sidechain, so automatic control remains neutral.
 - Real compatibility must be validated with the user's DAW version and audio drivers.
 
