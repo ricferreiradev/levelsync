@@ -1,0 +1,27 @@
+name: Solicitação de recurso
+description: Proponha uma melhoria focada e verificável
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema
+      description: Qual necessidade real esta mudança atende?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposta
+    validations:
+      required: true
+  - type: textarea
+    id: realtime
+    attributes:
+      label: Impacto em áudio em tempo real
+      description: Considere CPU, memória, latência, automação e compatibilidade de estado.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas

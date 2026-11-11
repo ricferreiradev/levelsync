@@ -1,0 +1,31 @@
+# Changelog
+
+Todas as alterações relevantes serão documentadas neste arquivo. O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o projeto pretende seguir [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+
+## [Unreleased]
+
+### Added
+
+- Estrutura de documentação e governança para publicação no GitHub.
+- Licença AGPL-3.0-or-later e avisos de terceiros.
+
+## [0.5.0] - 2026-11-11
+
+### Added
+
+- Perceptual Balance com análise espectral em 24 bandas ERB.
+- Music Silence Protection configurável.
+- Formato Standalone além do VST3.
+- Interface profissional, diagnóstico e telemetria.
+- Learn Balance com referência espectral persistente.
+
+### Fixed
+
+- Retorno da voz para ganho unitário durante paradas prolongadas do instrumental.
+- Ordem de desenho do painel Diagnostics.
+
+## [0.1.0] - 2026-11-03
+
+### Added
+
+- Estrutura inicial do plugin VST3 com JUCE, CMake e passthrough.

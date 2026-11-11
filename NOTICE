@@ -1,0 +1,9 @@
+LevelSync
+Copyright (C) 2026 LevelSync contributors
+
+This program is free software licensed under the GNU Affero General Public
+License, version 3 or (at your option) any later version. It is provided
+without warranty. See LICENSE for the complete terms.
+
+This distribution uses JUCE 9.0.5 and the Steinberg VST 3 SDK. See
+THIRD_PARTY_NOTICES.md for copyright and licensing information.
