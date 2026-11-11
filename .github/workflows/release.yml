@@ -84,6 +84,12 @@ jobs:
             -Version "${{ steps.version.outputs.version }}" `
             -RepositoryUrl "https://github.com/${{ github.repository }}"
 
+      - name: Add user manuals
+        shell: pwsh
+        run: |
+          Copy-Item ./output/pdf/LevelSync-User-Manual-EN.pdf ./release/
+          Copy-Item ./output/pdf/LevelSync-Manual-do-Usuario-PT-BR.pdf ./release/
+
       - name: Create SHA-256 checksums
         shell: pwsh
         run: |
@@ -97,8 +103,46 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          $tag = "${{ github.ref_name }}"
+          $repository = "${{ github.repository }}"
           $assets = Get-ChildItem ./release -File | ForEach-Object { $_.FullName }
-          gh release create "${{ github.ref_name }}" @assets `
-            --verify-tag `
-            --generate-notes `
-            --title "LevelSync ${{ github.ref_name }}"
+          @"
+          ## LevelSync $tag
+
+          LevelSync is an automatic vocal-balance processor for Windows, available as VST3 and Standalone.
+
+          ### What's new in v0.5.1
+
+          - More compact interface with improved use of screen space.
+          - Reorganized monitoring and Learn Balance panels.
+          - Fixed spacing and clipping in Music Silence Protection controls.
+          - English GitHub documentation with English and Brazilian Portuguese user manuals.
+
+          ### Downloads
+
+          - **Standalone ZIP**: run LevelSync without opening a DAW.
+          - **VST3 ZIP**: manual plugin installation.
+          - **VST3 Setup EXE**: automatic Windows installer.
+          - **SHA256SUMS.txt**: download integrity checks.
+
+          ### Documentation
+
+          - [User Manual - English](https://github.com/$repository/releases/download/$tag/LevelSync-User-Manual-EN.pdf)
+          - [Manual do Usuário - Português](https://github.com/$repository/releases/download/$tag/LevelSync-Manual-do-Usuario-PT-BR.pdf)
+
+          ### Notes
+
+          - Windows x64 only.
+          - The installer is currently unsigned and may trigger a Microsoft Defender SmartScreen warning.
+          - Automated tests do not replace validation in every DAW and driver configuration.
+          "@ | Set-Content ./release-notes.md -Encoding utf8
+
+          if (gh release view $tag *> $null) {
+            gh release upload $tag @assets --clobber
+            gh release edit $tag --title "LevelSync $tag" --notes-file ./release-notes.md
+          } else {
+            gh release create $tag @assets `
+              --verify-tag `
+              --title "LevelSync $tag" `
+              --notes-file ./release-notes.md
+          }

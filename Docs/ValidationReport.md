@@ -1,53 +1,53 @@
-# Relatório de validação — LevelSync 0.4.0
+# Validation report - LevelSync 0.4.0
 
-Data: 03/11/2026. Projeto validado: `C:\projetos\LevelSync`. JUCE local: 9.0.5 em `C:\Dev\JUCE`. Compilador: MSVC 19.52.37025.0, Release x64.
+Date: 2026-11-03. Validated project: `C:\projetos\LevelSync`. Local JUCE: 9.0.5 at `C:\Dev\JUCE`. Compiler: MSVC 19.52.37025.0, Release x64.
 
-## Aprovados
+## Passed
 
-- Configuração CMake com JUCE via `add_subdirectory()`.
-- Build dos alvos `LevelSync_VST3`, `LevelSyncDSPTests`, `LevelSyncProcessorTests` e `LevelSyncOfflineMetrics`.
-- Manifesto VST3 gerado para LevelSync 0.4.0 / VST SDK 3.8.0.
-- CTest: 3 de 3 executáveis aprovados; 27 cenários nomeados, zero falhas, 12,47 s.
-- DSP: 44,1/48/96 kHz, blocos variados, NaN/Inf, silêncio, sidechain ausente/desconectado, Learn, limites, hold, retorno neutro, execução prolongada e ausência de alocações no caminho preparado.
-- Fila SPSC: capacidade fixa, FIFO, overflow não bloqueante e nenhuma alocação nas operações.
-- Processador: layouts mono/estéreo, sidechain somente leitura, estado versionado, automação, Enable/bypass, GUI fechada, buffer vazio e abertura/redimensionamento/fechamento repetidos do editor.
-- Interface renderizada em 1180×820 e inspecionada visualmente; nenhum controle cortado na captura padrão.
+- CMake configuration with JUCE through `add_subdirectory()`.
+- Builds for `LevelSync_VST3`, `LevelSyncDSPTests`, `LevelSyncProcessorTests`, and `LevelSyncOfflineMetrics`.
+- VST3 manifest generated for LevelSync 0.4.0 / VST SDK 3.8.0.
+- CTest: 3 of 3 executables passed; 27 named scenarios, zero failures, 12.47 s.
+- DSP: 44.1/48/96 kHz, varied blocks, NaN/Inf, silence, missing/disconnected sidechain, Learn, limits, hold, neutral return, long execution, and no prepared-path allocation.
+- SPSC queue: fixed capacity, FIFO, non-blocking overflow, and no allocation during operations.
+- Processor: mono/stereo layouts, read-only sidechain, versioned state, automation, Enable/bypass, closed GUI, empty buffer, and repeated editor open/resize/close.
+- Interface rendered at 1180×820 and visually inspected; no controls were clipped in the standard capture used at that time.
 
-## Métricas sintéticas medidas
+## Measured synthetic metrics
 
-O cenário e as definições estão em `PerformanceMethodology.md`.
+The scenario and definitions are documented in `PerformanceMethodology.md`.
 
-| Métrica | Resultado |
+| Metric | Result |
 | --- | ---: |
-| Mean Absolute Error estável | 0,0105566 dB |
-| Maximum Gain | +6,0000 dB |
-| Minimum Gain | −1,9485 dB |
-| Gain Movement acumulado | 7,9485 dB |
-| Peak Gain Speed | 7,47678 dB/s |
-| Convergence Time | 2,4 s |
-| Frames estáveis válidos | 150 |
+| Stable Mean Absolute Error | 0.0105566 dB |
+| Maximum Gain | +6.0000 dB |
+| Minimum Gain | -1.9485 dB |
+| Cumulative Gain Movement | 7.9485 dB |
+| Peak Gain Speed | 7.47678 dB/s |
+| Convergence Time | 2.4 s |
+| Valid stable frames | 150 |
 
-Esses números pertencem ao sinal determinístico do teste e servem como referência de regressão. Não medem desempenho geral em fala e música reais.
+These values belong to the deterministic test signal and serve as a regression reference. They do not measure general performance on real speech and music.
 
-## Reprovados
+## Failed
 
-Nenhum teste automatizado na execução final.
+No automated test failed in the final run.
 
-## Não executados neste ambiente
+## Not executed in that environment
 
-- Descoberta e carregamento pelo scanner de uma DAW compatível com VST3.
-- Exposição e roteamento real do sidechain na DAW.
-- Automação gravada e reproduzida pelo host.
-- Comparação entre playback e renderização offline no host.
-- Restauração depois de fechar e reabrir uma sessão real da DAW.
-- Comparação com Waves Vocal Rider em material musical.
-- Avaliação auditiva, clipping intersample e uso de CPU em uma sessão real.
+- Discovery and loading by a VST3-compatible DAW scanner.
+- Real sidechain exposure and routing in a DAW.
+- Host-recorded and replayed automation.
+- Comparison between host playback and offline rendering.
+- State restoration after closing and reopening a real DAW session.
+- Comparison with Waves Vocal Rider on musical material.
+- Listening evaluation, intersample clipping, and CPU use in a real session.
 
-## Limitações conhecidas
+## Known limitations
 
-- Loudness é uma estimativa K suavizada, não medidor LUFS normativo certificado.
-- Detecção vocal por energia pode responder a vazamento, ruído e outros sons.
-- Não há limiter ou proteção true-peak; boost requer headroom posterior.
-- A automação é lida uma vez por bloco, sem precisão por amostra.
-- O histórico visual existe enquanto o editor está aberto. Se a GUI não consumir a fila cheia, novos frames são descartados sem afetar o DSP.
-- A telemetria e as métricas são observacionais; não participam do controle de áudio.
+- Loudness is a smoothed K-weighted estimate, not a certified normative LUFS meter.
+- Energy-based vocal detection can respond to bleed, noise, and other sounds.
+- There is no limiter or true-peak protection; positive gain requires downstream headroom.
+- Automation is read once per block, without per-sample accuracy.
+- Visual history exists while the editor is open. If the GUI does not consume a full queue, new frames are discarded without affecting DSP.
+- Telemetry and metrics are observational and do not participate in audio control.

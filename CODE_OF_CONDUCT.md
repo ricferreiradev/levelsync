@@ -1,19 +1,19 @@
-# Código de Conduta
+# Code of Conduct
 
-Queremos uma comunidade técnica respeitosa, segura e colaborativa.
+We want a respectful, safe, and collaborative technical community.
 
-## Comportamento esperado
+## Expected behavior
 
-- Seja cordial, específico e construtivo.
-- Critique ideias e código, não pessoas.
-- Respeite diferenças de experiência, identidade e contexto.
-- Proteja informações privadas e materiais de áudio de terceiros.
-- Aceite decisões de moderação e mantenha discussões relacionadas ao projeto.
+- Be courteous, specific, and constructive.
+- Critique ideas and code, not people.
+- Respect differences in experience, identity, and context.
+- Protect private information and third-party audio materials.
+- Accept moderation decisions and keep discussions relevant to the project.
 
-## Comportamento inaceitável
+## Unacceptable behavior
 
-Assédio, discriminação, ameaças, ataques pessoais, exposição de dados privados, spam e conteúdo sexual ou violento não solicitado não serão tolerados.
+Harassment, discrimination, threats, personal attacks, disclosure of private data, spam, and unsolicited sexual or violent content are not tolerated.
 
-## Aplicação
+## Enforcement
 
-Problemas devem ser relatados privadamente aos mantenedores pelos recursos do GitHub. Os mantenedores podem editar ou remover conteúdo, encerrar discussões e restringir participação para proteger a comunidade.
+Report concerns privately to the maintainers through GitHub. Maintainers may edit or remove content, close discussions, and restrict participation when necessary to protect the community.

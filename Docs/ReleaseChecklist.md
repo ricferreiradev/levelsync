@@ -1,33 +1,33 @@
-# Checklist de release
+# Release checklist
 
-## Código e testes
+## Code and tests
 
-- [ ] Atualizar versão em `CMakeLists.txt` e `CHANGELOG.md`.
-- [ ] Configurar com JUCE 9.0.5 e Release x64.
-- [ ] Compilar `LevelSync_VST3` e `LevelSync_Standalone`.
-- [ ] Executar CTest com zero falhas.
-- [ ] Abrir o Standalone e inspecionar a interface em 100% e escala DPI elevada.
-- [ ] Validar VST3 em pelo menos uma DAW compatível com sidechain real.
-- [ ] Testar 44,1/48/96 kHz e buffers usados na validação manual.
+- [ ] Update the version in `CMakeLists.txt` and `CHANGELOG.md`.
+- [ ] Configure with JUCE 9.0.5 and Release x64.
+- [ ] Build `LevelSync_VST3` and `LevelSync_Standalone`.
+- [ ] Run CTest with zero failures.
+- [ ] Open Standalone and inspect the interface at 100% and high DPI scaling.
+- [ ] Validate VST3 in at least one DAW with a real sidechain.
+- [ ] Test 44.1/48/96 kHz and the buffer sizes used for manual validation.
 
-## Distribuição AGPL
+## AGPL distribution
 
-- [ ] Incluir `LICENSE`, `NOTICE` e `THIRD_PARTY_NOTICES.md`.
-- [ ] Publicar o código-fonte exato correspondente ao binário.
-- [ ] Identificar a versão exata do JUCE e disponibilizar acesso ao código correspondente.
-- [ ] Incluir scripts CMake e informações suficientes para reproduzir o build.
-- [ ] Não incluir arquivos proprietários, projetos de DAW ou áudio sem autorização.
-- [ ] Publicar checksums dos artefatos.
-- [ ] Confirmar que os ZIPs contêm licença, avisos e a estrutura correta dos binários.
-- [ ] Compilar o instalador Inno Setup e revisar o log sem executar uma instalação destrutiva.
-- [ ] Assinar digitalmente o instalador, caso exista certificado configurado para a release.
+- [ ] Include `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`.
+- [ ] Publish the exact source corresponding to the binary.
+- [ ] Identify the exact JUCE version and provide access to its corresponding source.
+- [ ] Include CMake scripts and enough information to reproduce the build.
+- [ ] Exclude unauthorized proprietary files, DAW projects, and audio.
+- [ ] Publish artifact checksums.
+- [ ] Confirm ZIP packages contain legal files and the correct binary structure.
+- [ ] Build the Inno Setup installer and review its log without performing a destructive installation.
+- [ ] Digitally sign the installer if a release signing certificate is configured.
 
 ## GitHub
 
-- [ ] Criar uma tag assinada no formato `vX.Y.Z`.
-- [ ] Anexar a pasta `LevelSync.vst3` compactada sem alterar sua estrutura.
-- [ ] Anexar o Standalone separadamente.
-- [ ] Anexar o instalador VST3 `.exe` gerado pelo Inno Setup.
-- [ ] Anexar `SHA256SUMS.txt` e conferir os hashes publicados.
-- [ ] Copiar notas relevantes do changelog para a release.
-- [ ] Informar claramente que testes automatizados não equivalem a validação em todas as DAWs.
+- [ ] Create a signed `vX.Y.Z` tag.
+- [ ] Attach the complete compressed `LevelSync.vst3` bundle.
+- [ ] Attach Standalone separately.
+- [ ] Attach the Inno Setup VST3 installer.
+- [ ] Attach `SHA256SUMS.txt` and verify published hashes.
+- [ ] Copy relevant changelog notes into the release.
+- [ ] State clearly that automated tests are not validation in every DAW.

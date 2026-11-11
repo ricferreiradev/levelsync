@@ -1,43 +1,53 @@
 # LevelSync
 
-LevelSync é um plugin de balanceamento vocal para Windows que ajusta suavemente o nível da voz em relação a um sidechain instrumental. O projeto gera os formatos **VST3** e **Standalone** com C++17, JUCE e CMake.
+LevelSync is a Windows vocal-balance processor that smoothly adjusts vocal gain against a stereo instrumental sidechain. The project builds **VST3** and **Standalone** formats with C++17, JUCE, and CMake.
 
 ## Download
 
-**[Baixar a versão mais recente do LevelSync](https://github.com/ricferreiradev/levelsync/releases/latest)**
+**[Download the latest LevelSync release](https://github.com/ricferreiradev/levelsync/releases/latest)**
 
-Na página de downloads estão disponíveis o aplicativo Standalone, o plugin VST3 em ZIP, o instalador para Windows e os checksums de verificação. Para consultar versões anteriores, acesse [todas as releases](https://github.com/ricferreiradev/levelsync/releases).
+The downloads page provides the Standalone application, a VST3 ZIP package, a Windows installer, and SHA-256 checksums. See [all releases](https://github.com/ricferreiradev/levelsync/releases) for previous versions.
 
-> Estado do projeto: beta. Os testes automatizados cobrem o DSP, o processador e a interface, mas não substituem validação auditiva em uma DAW real.
+> Project status: beta. Automated tests cover the DSP, processor, and interface, but they do not replace listening tests in a real DAW.
 
-## Recursos
+## Documentation
 
-- Entrada principal mono ou estéreo para voz.
-- Sidechain estéreo dedicado para o instrumental.
-- Controle automático com attack, release, deadband, strength e limites de ganho.
-- Learn Balance com referência robusta e persistente.
-- Perceptual Balance opcional com análise espectral em 24 bandas ERB.
-- Music Silence Protection para devolver a voz a 0 dB durante paradas musicais.
-- Interface redimensionável com histórico, medidores e diagnóstico.
-- Processamento em tempo real sem mutex ou alocação após `prepareToPlay()`.
-- VST3 e aplicativo Standalone para inspeção da interface sem abrir a DAW.
+- [User Manual - English](output/pdf/LevelSync-User-Manual-EN.pdf)
+- [Manual do Usuário - Português](output/pdf/LevelSync-Manual-do-Usuario-PT-BR.pdf)
+- [DAW installation and validation](Docs/DAWInstallationAndValidation.md)
+- [Music Silence Protection](Docs/MusicSilenceProtection.md)
+- [Performance methodology](Docs/PerformanceMethodology.md)
+- [Comparison protocol](Docs/ComparisonProtocol.md)
+- [Validation report](Docs/ValidationReport.md)
+- [Release checklist](Docs/ReleaseChecklist.md)
+- [Packaging and publishing](Packaging/README.md)
 
-## Requisitos
+## Features
 
-- Windows 10 ou mais recente, x64.
-- CMake 3.22 ou mais recente.
-- Visual Studio 2022 ou mais recente com Desktop development with C++ e Windows SDK.
-- JUCE 9.0.5. Por padrão, o projeto procura o framework em `C:\Dev\JUCE`.
+- Mono or stereo main input for vocals.
+- Dedicated stereo instrumental sidechain.
+- Automatic control with attack, release, deadband, strength, and gain limits.
+- Learn Balance with a robust, persistent reference.
+- Optional Perceptual Balance with 24-band ERB spectral analysis.
+- Music Silence Protection that returns vocal gain to 0 dB during musical stops.
+- Resizable interface with history, meters, and diagnostics.
+- Real-time processing without mutexes or allocations after `prepareToPlay()`.
+- VST3 and Standalone builds using the same processor and editor.
 
-O JUCE não é copiado para este repositório. Use a versão indicada para builds reproduzíveis e confira as obrigações em [Licenciamento](#licenciamento).
+## Requirements
 
-## Compilação
+- Windows 10 or later, x64.
+- CMake 3.22 or later.
+- Visual Studio 2022 or later with Desktop development with C++ and a Windows SDK.
+- JUCE 9.0.5. By default, the project looks for JUCE at `C:\Dev\JUCE`.
 
-Depois de clonar ou baixar o código-fonte, abra PowerShell na raiz do projeto:
+JUCE is not vendored in this repository. Use the documented version for reproducible builds and review the obligations under [Licensing](#licensing).
+
+## Build
+
+Open PowerShell in the project root:
 
 ```powershell
-cd C:\caminho\para\LevelSync
-
 cmake -S . -B build -A x64 `
   -DJUCE_DIR="C:/Dev/JUCE" `
   -DBUILD_TESTING=ON
@@ -50,114 +60,102 @@ cmake --build build --config Release `
 ctest --test-dir build -C Release --output-on-failure
 ```
 
-Artefatos gerados:
+Generated artifacts:
 
 - VST3: `build/LevelSync_artefacts/Release/VST3/LevelSync.vst3`
 - Standalone: `build/LevelSync_artefacts/Release/Standalone/LevelSync.exe`
 
-## Pacotes de release
+## Release packages
 
-O repositório possui um workflow separado que publica releases ao receber uma tag no formato `vMAJOR.MINOR.PATCH`. A versão da tag deve ser igual à versão declarada em `CMakeLists.txt`.
-
-Exemplo para a versão atual:
+The release workflow runs for tags matching `vMAJOR.MINOR.PATCH`. The tag version must match `CMakeLists.txt`.
 
 ```powershell
 git tag -a v0.5.1 -m "LevelSync 0.5.1"
 git push origin v0.5.1
 ```
 
-Depois do build e dos testes, a GitHub Release recebe:
+The release contains:
 
 - `LevelSync-0.5.1-Standalone-Windows-x64.zip`
 - `LevelSync-0.5.1-VST3-Windows-x64.zip`
 - `LevelSync-0.5.1-VST3-Setup-Windows-x64.exe`
 - `SHA256SUMS.txt`
 
-Os ZIPs incluem `LICENSE`, `NOTICE`, `README.md` e `THIRD_PARTY_NOTICES.md`. O ZIP VST3 preserva a pasta completa `LevelSync.vst3`; não extraia somente o binário interno.
+The ZIP packages include `LICENSE`, `NOTICE`, `README.md`, and `THIRD_PARTY_NOTICES.md`. The VST3 ZIP preserves the complete `LevelSync.vst3` bundle; do not extract only its internal binary.
 
-Para gerar os ZIPs localmente depois do build:
+To build packages locally:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass `
   -File Packaging/CreateReleasePackages.ps1 `
   -BuildDirectory ./build -OutputDirectory ./release -Version 0.5.1
-```
 
-Para compilar o instalador, instale o Inno Setup e execute:
-
-```powershell
 powershell -NoProfile -ExecutionPolicy Bypass `
   -File Packaging/BuildInnoInstaller.ps1 `
   -BuildDirectory ./build -OutputDirectory ./release -Version 0.5.1 `
-  -RepositoryUrl "https://github.com/SEU-USUARIO/LevelSync"
+  -RepositoryUrl "https://github.com/ricferreiradev/levelsync"
 ```
 
-O instalador requer privilégios administrativos porque grava no diretório VST3 compartilhado do Windows. Builds locais e do CI não são assinados digitalmente por padrão; uma release pública pode exibir aviso do Microsoft Defender SmartScreen até que seja configurado um certificado de assinatura de código.
+The installer requires administrator privileges because it writes to the shared Windows VST3 directory. Local and CI builds are unsigned by default and may trigger a Microsoft Defender SmartScreen warning.
 
-## Instalação em uma DAW
+## DAW installation
 
-1. Feche instâncias existentes do LevelSync.
-2. Copie a pasta inteira `LevelSync.vst3` para uma pasta VST3 escaneada pela sua DAW. No Windows, o local compartilhado padrão e recomendado é `C:\Program Files\Common Files\VST3`; se a DAW estiver configurada para usar outro diretório, utilize esse diretório ou adicione o caminho padrão ao scanner.
-3. Execute uma nova varredura de plugins VST3 na DAW.
-4. Insira o LevelSync na faixa de voz.
-5. Envie o bus ou faixa instrumental para o sidechain estéreo do plugin.
+1. Close existing LevelSync instances.
+2. Copy the complete `LevelSync.vst3` folder to a VST3 directory scanned by your DAW. The standard Windows location is `C:\Program Files\Common Files\VST3`; if the DAW uses another configured directory, use it or add the standard path to its scanner.
+3. Rescan VST3 plugins in the DAW.
+4. Insert LevelSync on the vocal track.
+5. Route the instrumental track or bus to the plugin's stereo sidechain.
 
-O sidechain é somente leitura e nunca é misturado à saída vocal. Consulte [o guia completo de instalação e validação](Docs/DAWInstallationAndValidation.md).
+The sidechain is read-only and is never mixed into the vocal output. See the [complete installation and validation guide](Docs/DAWInstallationAndValidation.md).
 
-## Uso básico
+## Basic use
 
-1. Reproduza voz e instrumental por alguns segundos.
-2. Ajuste `Vocal Threshold` para reconhecer a voz sem reagir ao ruído de fundo.
-3. Defina `Target Balance`, limites, attack e release.
-4. Opcionalmente, ajuste manualmente uma relação musical adequada e use `Learn Balance`.
-5. Mantenha Music Silence Protection habilitado para preservar o nível original da voz em paradas do instrumental.
+1. Play vocals and instrumental audio together for a few seconds.
+2. Set `Vocal Threshold` high enough to reject the noise floor while still detecting useful vocals.
+3. Set `Target Balance`, gain limits, attack, and release.
+4. Optionally establish a suitable manual balance and run `Learn Balance`.
+5. Keep Music Silence Protection enabled to preserve the original vocal level during instrumental stops.
 
-As leituras exibidas são estimativas K-weighted de 400 ms. Elas não são medições LUFS integradas ou short-term normativas.
+Displayed loudness values are 400 ms K-weighted estimates. They are not normative integrated or short-term LUFS measurements.
 
-## Arquitetura
+## Architecture
 
 ```text
-Entrada vocal ──► Loudness/VAD ──► Balance Controller ──► Gain Smoother ──► Saída
-                         ▲                  ▲
-Sidechain musical ───────┴─► Silence + Spectral Analysis
+Vocal input --> Loudness/VAD --> Balance Controller --> Gain Smoother --> Output
+                     ^                 ^
+Instrumental sidechain --------> Silence + Spectral Analysis
 ```
 
-- `Source/DSP`: componentes DSP independentes da interface.
-- `Source/UI`: tema, medidores e gráficos.
-- `Source/PluginProcessor.*`: buses, parâmetros, estado e ponte de telemetria.
-- `Source/PluginEditor.*`: interface compartilhada por VST3 e Standalone.
-- `Tests`: testes DSP, integração do processador, persistência e renderização.
+- `Source/DSP`: UI-independent DSP components.
+- `Source/UI`: theme, meters, and graphs.
+- `Source/PluginProcessor.*`: buses, parameters, state, and telemetry bridge.
+- `Source/PluginEditor.*`: interface shared by VST3 and Standalone.
+- `Tests`: DSP, processor integration, persistence, and rendering tests.
 
-## Documentação
+## Contributing and security
 
-- [Music Silence Protection](Docs/MusicSilenceProtection.md)
-- [Instalação e validação em DAWs](Docs/DAWInstallationAndValidation.md)
-- [Metodologia de desempenho](Docs/PerformanceMethodology.md)
-- [Protocolo de comparação](Docs/ComparisonProtocol.md)
-- [Relatório de validação](Docs/ValidationReport.md)
-- [Checklist de release](Docs/ReleaseChecklist.md)
-- [Empacotamento e publicação](Packaging/README.md)
-- [Como contribuir](CONTRIBUTING.md)
-- [Política de segurança](SECURITY.md)
+- [Contributing guide](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security Policy](SECURITY.md)
 - [Changelog](CHANGELOG.md)
 
-## Limitações conhecidas
+## Known limitations
 
-- Apenas Windows x64 está configurado no momento.
-- O plugin não separa fontes; ruído e vazamento podem afetar detectores.
-- Ganho positivo pode exceder 0 dBFS. Reserve headroom na cadeia.
-- A automação é lida por bloco, não sample-accurate.
-- O Standalone não possui sidechain instrumental separado; sem ele, o controle permanece neutro.
-- Compatibilidade real deve ser validada nas versões de DAW e drivers usadas pelo usuário.
+- Only Windows x64 is currently configured.
+- The plugin does not perform source separation; noise and bleed can affect detectors.
+- Positive gain can exceed 0 dBFS. Preserve headroom in the processing chain.
+- Automation is read once per block, not sample-accurately.
+- Standalone has no separate instrumental sidechain, so automatic control remains neutral.
+- Real compatibility must be validated with the user's DAW version and audio drivers.
 
-## Licenciamento
+## Licensing
 
-O código original do LevelSync é distribuído sob a **GNU Affero General Public License v3.0 ou posterior** (`AGPL-3.0-or-later`). Consulte [LICENSE](LICENSE).
+Original LevelSync code is distributed under the **GNU Affero General Public License v3.0 or later** (`AGPL-3.0-or-later`). See [LICENSE](LICENSE).
 
-O projeto usa JUCE 9.0.5, que é oferecido sob AGPLv3 ou licença comercial. Este repositório adota a opção AGPL. Se você quiser distribuir uma versão proprietária ou não cumprir a AGPL, deverá obter uma licença comercial adequada do JUCE e revisar a licença do restante do projeto.
+The project uses JUCE 9.0.5, offered under AGPLv3 or a commercial license. This repository uses the AGPL option. Proprietary distribution, or distribution that does not comply with the AGPL, requires an appropriate JUCE commercial license and a review of the rest of the project's licensing.
 
-Distribuições binárias devem disponibilizar o código-fonte correspondente, os scripts de build, esta licença e os avisos de terceiros pelo mesmo meio, conforme aplicável. Consulte [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Binary distributions must provide the corresponding source code, build scripts, license, and third-party notices through an appropriate equivalent channel. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 Copyright © 2026 LevelSync contributors.
 
-O software é fornecido sem garantia. Este resumo não substitui os textos das licenças nem aconselhamento jurídico.
+This software is provided without warranty. This summary is not a substitute for the license texts or legal advice.

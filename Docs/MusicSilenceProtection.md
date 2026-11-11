@@ -1,22 +1,22 @@
 # Music Silence Protection
 
-Music Silence Protection impede que uma correção vocal antiga permaneça aplicada durante uma parada do instrumental.
+Music Silence Protection prevents a previous vocal correction from remaining applied during an instrumental stop.
 
-## Medição
+## Measurement
 
-O detector usa energia não ponderada do sidechain estéreo, separada do medidor K-weighted usado pelo controlador de balanceamento. A escala é:
+The detector uses unweighted energy from the stereo sidechain, separate from the K-weighted meter used by the balance controller. Its scale is:
 
 `dBFS = 10 * log10((L² + R²) / 2)`
 
-Assim, o threshold rotulado em dBFS nunca é comparado diretamente ao valor K-weighted ou tratado como LUFS. Um envelope energético de 5 ms acompanha as transições. O estado muda para silêncio somente depois de `Silence Hold`; para voltar ao estado ativo, o sinal deve superar o threshold em 3 dB durante `Silence Release`.
+The dBFS threshold is never compared directly with a K-weighted value or treated as LUFS. A 5 ms energy envelope follows transitions. The state changes to silent only after `Silence Hold`. To return to active, the signal must remain 3 dB above the threshold for `Silence Release`.
 
-## Comportamento
+## Behavior
 
-- Enquanto o silêncio ainda está no período de hold, o último target válido é preservado e nenhum novo target é calculado a partir do loudness decadente.
-- Depois da confirmação, o target passa a 0 dB e chega a 99,9% de unity dentro de `Return to Unity`.
-- O retorno independe da presença de voz e usa suavização por amostra.
-- O Learn Balance pausa enquanto o instrumental não é válido, sem substituir a referência anterior.
-- A correção perceptual é desativada e suavemente descarregada durante a proteção.
-- Sidechain desconectado continua sendo tratado separadamente e não é apresentado como proteção ativa.
+- During the hold period, the last valid target is retained and no new target is calculated from decaying loudness.
+- After silence is confirmed, the target becomes 0 dB and reaches 99.9% of unity within `Return to Unity`.
+- The return does not depend on vocal presence and uses per-sample smoothing.
+- Learn Balance pauses while the instrumental is invalid without replacing the previous reference.
+- Perceptual correction is disabled and smoothly discharged while protection is active.
+- A disconnected sidechain is handled separately and is not displayed as active protection.
 
-Valores padrão: threshold −55 dBFS, hold 200 ms, release 400 ms e retorno 300 ms.
+Defaults: -55 dBFS threshold, 200 ms hold, 400 ms release, and 300 ms return.

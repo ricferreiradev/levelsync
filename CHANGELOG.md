@@ -1,45 +1,53 @@
 # Changelog
 
-Todas as alterações relevantes serão documentadas neste arquivo. O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o projeto pretende seguir [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+All notable changes to this project are documented in this file. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project intends to follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+### Added
+
+- English user manual while retaining the Brazilian Portuguese edition.
+
+### Changed
+
+- GitHub-facing documentation is now written in English.
 
 ## [0.5.1] - 2026-11-11
 
 ### Changed
 
-- Interface compactada para ocupar menos espaço na tela, preservando todos os controles.
-- Painéis de monitoramento, Learn Balance e controles reorganizados para melhorar o aproveitamento vertical.
+- Compacted the interface while preserving every control.
+- Reorganized monitoring, Learn Balance, and control panels for better vertical space usage.
 
 ### Fixed
 
-- Espaçamento e recorte dos controles inferiores de Music Silence Protection.
+- Corrected spacing and clipping in the lower Music Silence Protection controls.
 
 ### Added
 
-- Estrutura de documentação e governança para publicação no GitHub.
-- Licença AGPL-3.0-or-later e avisos de terceiros.
-- Empacotamento ZIP para Standalone e VST3.
-- Instalador VST3 para Windows com Inno Setup.
-- Publicação automática de releases a partir de tags versionadas.
+- GitHub documentation and project governance structure.
+- AGPL-3.0-or-later licensing and third-party notices.
+- Standalone and VST3 ZIP packaging.
+- Windows VST3 installer built with Inno Setup.
+- Automated release publishing from version tags.
 
 ## [0.5.0] - 2026-11-11
 
 ### Added
 
-- Perceptual Balance com análise espectral em 24 bandas ERB.
-- Music Silence Protection configurável.
-- Formato Standalone além do VST3.
-- Interface profissional, diagnóstico e telemetria.
-- Learn Balance com referência espectral persistente.
+- Perceptual Balance with 24-band ERB spectral analysis.
+- Configurable Music Silence Protection.
+- Standalone format in addition to VST3.
+- Professional interface, diagnostics, and telemetry.
+- Learn Balance with a persistent spectral reference.
 
 ### Fixed
 
-- Retorno da voz para ganho unitário durante paradas prolongadas do instrumental.
-- Ordem de desenho do painel Diagnostics.
+- Vocal return to unity during prolonged instrumental stops.
+- Diagnostics overlay drawing order.
 
 ## [0.1.0] - 2026-11-03
 
 ### Added
 
-- Estrutura inicial do plugin VST3 com JUCE, CMake e passthrough.
+- Initial JUCE/CMake VST3 project with passthrough processing.

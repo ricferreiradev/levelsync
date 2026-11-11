@@ -1,13 +1,13 @@
 # Security Policy
 
-## Versões suportadas
+## Supported versions
 
-Enquanto o projeto estiver em beta, somente a versão mais recente do branch principal recebe correções de segurança.
+While the project is in beta, only the latest version on the main branch receives security fixes.
 
-## Relatando uma vulnerabilidade
+## Reporting a vulnerability
 
-Não publique detalhes exploráveis em uma issue pública. Use o recurso **Private vulnerability reporting** do GitHub, se estiver habilitado no repositório. Caso não esteja, peça ao mantenedor um canal privado sem incluir detalhes sensíveis na solicitação inicial.
+Do not publish exploitable details in a public issue. Use GitHub **Private vulnerability reporting** if it is enabled for the repository. Otherwise, ask a maintainer for a private channel without including sensitive details in the initial request.
 
-Inclua versão, ambiente, impacto, passos mínimos para reprodução e qualquer mitigação conhecida. Não inclua projetos de DAW, áudio ou dados de terceiros sem autorização.
+Include the affected version, environment, impact, minimum reproduction steps, and any known mitigation. Do not include DAW projects, audio, or third-party data without authorization.
 
-O projeto não promete prazo de resposta até que um canal de manutenção formal seja publicado.
+The project does not promise a response time until a formal maintenance channel is published.

@@ -1,61 +1,61 @@
-# Protocolo de comparação: LevelSync e Waves Vocal Rider
+# Comparison protocol: LevelSync and Waves Vocal Rider
 
-## Objetivo
+## Objective
 
-Comparar estabilidade, erro de balanço, movimento de ganho e comportamento transitório em condições reproduzíveis. Os plugins podem usar detectores, janelas e estratégias de controle diferentes; o protocolo mede resultados e não presume equivalência interna nem superioridade.
+Compare balance stability, balance error, gain movement, and transient behavior under reproducible conditions. The plugins may use different detectors, windows, and control strategies; this protocol measures outcomes and does not assume internal equivalence or superiority.
 
-## Preparação da sessão na DAW
+## DAW session preparation
 
-1. Use uma cópia da sessão e desative normalização automática, outros riders, compressores e automações de volume que afetem o teste.
-2. Escolha uma faixa vocal e um stem instrumental sem alterações entre as comparações. Anote sample rate, buffer, pan law e níveis dos faders.
-3. Crie duas cópias idênticas da rota vocal, uma para cada plugin. Mantenha o mesmo ponto de inserção, antes ou depois dos mesmos processos, e envie ambas ao mesmo bus de monitoração. Nunca reproduza as duas simultaneamente para a avaliação auditiva.
-4. Alimente o sidechain do LevelSync pelo mesmo stem instrumental usado na reprodução. Configure o Vocal Rider conforme sua documentação para receber condições equivalentes. Caso os roteamentos não sejam tecnicamente idênticos, registre a diferença.
-5. Iguale o ganho inicial com os plugins em estado neutro. Evite compensar resultados posteriormente com faders diferentes.
+1. Use a copy of the session and disable automatic normalization, other riders, compressors, and volume automation that would affect the test.
+2. Choose one vocal track and one instrumental stem that remain unchanged between comparisons. Record sample rate, buffer, pan law, and fader levels.
+3. Create two identical vocal routes, one for each plugin. Keep the same insert position and monitoring bus. Never play both simultaneously during listening evaluation.
+4. Feed LevelSync from the same instrumental stem used for playback. Configure Vocal Rider according to its documentation for equivalent conditions. Record any routing difference that cannot be eliminated.
+5. Match initial gain with both plugins neutral. Do not compensate later with different fader settings.
 
-## Regiões de teste
+## Test regions
 
-Marque previamente regiões contendo:
+Mark regions containing:
 
-- voz sustentada com instrumental estável;
-- mudança sustentada de ±6 dB no instrumental;
-- palavras curtas e transientes consonantais;
-- pausa curta entre frases;
-- silêncio vocal prolongado;
-- vazamento ou ruído de fundo;
-- trecho vocal baixo e trecho forte;
-- entrada e retirada do sidechain, apenas para o LevelSync.
+- sustained vocal with stable instrumental;
+- sustained ±6 dB instrumental change;
+- short words and consonant transients;
+- a short pause between phrases;
+- prolonged vocal silence;
+- bleed or background noise;
+- quiet and loud vocal passages;
+- sidechain connection and removal, for LevelSync only.
 
-Use as mesmas fronteiras de tempo para todos os renders. Inclua pelo menos cinco segundos estáveis depois de cada mudança para separar transiente e regime estável.
+Use identical time boundaries for every render. Include at least five stable seconds after each change to separate transient and steady-state behavior.
 
-## Configuração dos plugins
+## Plugin configuration
 
-No LevelSync, faça Learn Balance no equilíbrio manual escolhido e registre Target Balance, Strength, Attack, Release, Deadband, Vocal Hold, Silence Return, Max Boost e Max Cut. No Vocal Rider, registre todos os controles usados. Iguale a faixa máxima de movimento sempre que os controles permitirem, sem afirmar que valores com nomes semelhantes têm a mesma resposta.
+Run Learn Balance in LevelSync at the chosen manual balance and record Target Balance, Strength, Attack, Release, Deadband, Vocal Hold, Silence Return, Max Boost, and Max Cut. Record every Vocal Rider control. Match maximum movement ranges where possible without assuming similarly named controls have identical responses.
 
-## Renderização
+## Rendering
 
-1. Renderize cada rota offline para WAV float32, com a mesma duração, sample rate e ponto de início.
-2. Renderize também a voz sem rider e o instrumental de referência.
-3. Nomeie os arquivos sem revelar o plugin para uma avaliação auditiva cega, mantendo uma tabela privada de correspondência.
-4. Confirme alinhamento de amostras. O LevelSync declara latência zero; verifique se o host aplica alguma compensação ao outro plugin.
+1. Render each route offline as float32 WAV with identical duration, sample rate, and start point.
+2. Also render the unridden vocal and reference instrumental.
+3. Blind the filenames for listening evaluation while keeping a private mapping table.
+4. Confirm sample alignment. LevelSync reports zero latency; verify any compensation applied by the host to the other plugin.
 
-## Métricas
+## Metrics
 
-Calcule loudness com o mesmo detector e janelas em todos os arquivos. Em regiões com voz ativa e instrumental válido, compare:
+Use the same detector and windows for every file. In regions with active vocals and valid instrumental audio, compare:
 
-- erro de balanço: alvo menos a diferença entre voz pós-processamento e instrumental;
-- erro absoluto médio em regiões estáveis;
-- ganho máximo e mínimo;
-- movimento acumulado e pico de velocidade do ganho;
-- tempo para entrar e permanecer dentro de ±0,5 dB do alvo após mudança sustentada;
-- overshoot e quantidade de alternâncias ao redor do alvo;
-- nível de ruído durante pausas vocais.
+- balance error: target minus the post-processed vocal/instrumental difference;
+- mean absolute error in stable regions;
+- maximum and minimum gain;
+- cumulative movement and peak gain speed;
+- time to enter and remain within ±0.5 dB after a sustained change;
+- overshoot and target crossings;
+- noise level during vocal pauses.
 
-Relate regiões transitórias separadamente das estáveis. Uma média global pode esconder pumping, reação lenta ou amplificação de ruído.
+Report transient and stable regions separately. A global average can hide pumping, slow reaction, or noise amplification.
 
-## Avaliação auditiva
+## Listening evaluation
 
-Faça comparação cega com loudness de saída igualado, sem clipping. Avalie inteligibilidade, naturalidade, preservação de dinâmica, pumping, reação a consoantes, respiração e ruído entre frases. Registre observações por região antes de revelar os plugins.
+Perform a blind, output-level-matched comparison without clipping. Evaluate intelligibility, naturalness, dynamic preservation, pumping, consonant response, breathing, and between-phrase noise. Record observations by region before revealing plugin identities.
 
-## Relatório
+## Report
 
-Inclua versão de cada plugin, nome e versão da DAW, hardware, sample rate, buffer, renderização online/offline, parâmetros, roteamento, arquivos analisados e scripts/ferramentas usados. Resultados só valem para o material e as configurações testadas. Não generalize uma vitória sem repetir o protocolo em materiais diversos.
+Include plugin versions, DAW name/version, hardware, sample rate, buffer, online/offline rendering, parameters, routing, analyzed files, and tools/scripts. Results apply only to the tested material and settings. Do not generalize a win without repeating the protocol on varied material.

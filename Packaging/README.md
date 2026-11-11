@@ -1,20 +1,20 @@
-# Empacotamento e publicação
+# Packaging and publishing
 
-## Artefatos
+## Artifacts
 
-O pipeline produz três formas de distribuição para Windows x64:
+The pipeline produces three Windows x64 distribution formats:
 
-| Arquivo | Conteúdo |
+| File | Contents |
 | --- | --- |
-| `LevelSync-VERSION-Standalone-Windows-x64.zip` | Aplicativo Standalone e documentos legais |
-| `LevelSync-VERSION-VST3-Windows-x64.zip` | Bundle completo `LevelSync.vst3` e documentos legais |
-| `LevelSync-VERSION-VST3-Setup-Windows-x64.exe` | Instalador administrativo do VST3 |
+| `LevelSync-VERSION-Standalone-Windows-x64.zip` | Standalone application and legal documents |
+| `LevelSync-VERSION-VST3-Windows-x64.zip` | Complete `LevelSync.vst3` bundle and legal documents |
+| `LevelSync-VERSION-VST3-Setup-Windows-x64.exe` | Administrative VST3 installer |
 
-O Inno Setup gera instaladores `.exe`; ele não gera pacotes Windows Installer `.msi`.
+Inno Setup generates `.exe` installers, not Windows Installer `.msi` packages.
 
-## ZIPs
+## ZIP packages
 
-Compile os alvos Release antes de executar:
+Build the Release targets first, then run:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass `
@@ -24,11 +24,11 @@ powershell -NoProfile -ExecutionPolicy Bypass `
   -Version 0.5.1
 ```
 
-O script falha se os binários ou documentos legais estiverem ausentes. O VST3 permanece como um bundle, com `Contents/Resources` e `Contents/x86_64-win` dentro de `LevelSync.vst3`.
+The script fails if binaries or required legal documents are missing. The VST3 remains a bundle containing `Contents/Resources` and `Contents/x86_64-win` inside `LevelSync.vst3`.
 
-## Instalador Inno Setup
+## Inno Setup installer
 
-Instale o Inno Setup e execute:
+Install Inno Setup, then run:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass `
@@ -36,21 +36,21 @@ powershell -NoProfile -ExecutionPolicy Bypass `
   -BuildDirectory ./build `
   -OutputDirectory ./release `
   -Version 0.5.1 `
-  -RepositoryUrl "https://github.com/SEU-USUARIO/LevelSync"
+  -RepositoryUrl "https://github.com/ricferreiradev/levelsync"
 ```
 
-O instalador:
+The installer:
 
-- requer Windows x64 e privilégios administrativos;
-- mostra a AGPL e os avisos de terceiros;
-- instala o bundle em `{Common Files}\VST3\LevelSync.vst3`;
-- adiciona uma entrada de desinstalação do Windows;
-- remove os arquivos instalados quando desinstalado.
+- requires Windows x64 and administrator privileges;
+- displays the AGPL and third-party notices;
+- installs the bundle to `{Common Files}\VST3\LevelSync.vst3`;
+- adds a Windows uninstall entry;
+- removes installed files when uninstalled.
 
-O instalador não é assinado automaticamente. Para distribuição pública profissional, configure assinatura de código em um ambiente protegido e nunca armazene a chave privada ou senha no repositório.
+The installer is not signed automatically. For professional public distribution, configure code signing in a protected environment and never store the private key or password in the repository.
 
 ## GitHub Release
 
-`.github/workflows/release.yml` executa somente para tags `vX.Y.Z`, valida a versão do CMake, compila, testa, gera os três pacotes, cria hashes SHA-256 e publica a release por meio do GitHub CLI.
+`.github/workflows/release.yml` runs for `vX.Y.Z` tags, validates the CMake version, builds and tests the project, creates all three packages, generates SHA-256 hashes, and publishes the release through the GitHub CLI.
 
-O código-fonte da tag é disponibilizado automaticamente pelo GitHub. Como o build usa JUCE sob AGPLv3, a release também deve identificar e manter acessível o código correspondente do JUCE 9.0.5.
+GitHub automatically publishes the tagged source. Because the build uses JUCE under AGPLv3, the release must also identify and keep the corresponding JUCE 9.0.5 source available.
