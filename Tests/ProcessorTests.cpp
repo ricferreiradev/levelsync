@@ -272,7 +272,7 @@ int main()
         LevelSyncAudioProcessor processor;
         require(processor.hasEditor(), "editor available");
         std::unique_ptr<juce::AudioProcessorEditor> editor(processor.createEditor());
-        require(editor != nullptr && editor->getWidth() == 1180 && editor->getHeight() == 820, "editor size");
+        require(editor != nullptr && editor->getWidth() == 1000 && editor->getHeight() == 700, "editor size");
         const auto image = editor->createComponentSnapshot(editor->getLocalBounds());
         require(image.isValid(), "editor snapshot renders");
         const auto path = juce::File::getCurrentWorkingDirectory().getChildFile("LevelSync-editor.png");

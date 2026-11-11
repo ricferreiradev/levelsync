@@ -4,6 +4,17 @@ Todas as alterações relevantes serão documentadas neste arquivo. O formato se
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-11-11
+
+### Changed
+
+- Interface compactada para ocupar menos espaço na tela, preservando todos os controles.
+- Painéis de monitoramento, Learn Balance e controles reorganizados para melhorar o aproveitamento vertical.
+
+### Fixed
+
+- Espaçamento e recorte dos controles inferiores de Music Silence Protection.
+
 ### Added
 
 - Estrutura de documentação e governança para publicação no GitHub.

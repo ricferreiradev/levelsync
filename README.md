@@ -62,15 +62,15 @@ O repositório possui um workflow separado que publica releases ao receber uma t
 Exemplo para a versão atual:
 
 ```powershell
-git tag -a v0.5.0 -m "LevelSync 0.5.0"
-git push origin v0.5.0
+git tag -a v0.5.1 -m "LevelSync 0.5.1"
+git push origin v0.5.1
 ```
 
 Depois do build e dos testes, a GitHub Release recebe:
 
-- `LevelSync-0.5.0-Standalone-Windows-x64.zip`
-- `LevelSync-0.5.0-VST3-Windows-x64.zip`
-- `LevelSync-0.5.0-VST3-Setup-Windows-x64.exe`
+- `LevelSync-0.5.1-Standalone-Windows-x64.zip`
+- `LevelSync-0.5.1-VST3-Windows-x64.zip`
+- `LevelSync-0.5.1-VST3-Setup-Windows-x64.exe`
 - `SHA256SUMS.txt`
 
 Os ZIPs incluem `LICENSE`, `NOTICE`, `README.md` e `THIRD_PARTY_NOTICES.md`. O ZIP VST3 preserva a pasta completa `LevelSync.vst3`; não extraia somente o binário interno.
@@ -80,7 +80,7 @@ Para gerar os ZIPs localmente depois do build:
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass `
   -File Packaging/CreateReleasePackages.ps1 `
-  -BuildDirectory ./build -OutputDirectory ./release -Version 0.5.0
+  -BuildDirectory ./build -OutputDirectory ./release -Version 0.5.1
 ```
 
 Para compilar o instalador, instale o Inno Setup e execute:
@@ -88,7 +88,7 @@ Para compilar o instalador, instale o Inno Setup e execute:
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass `
   -File Packaging/BuildInnoInstaller.ps1 `
-  -BuildDirectory ./build -OutputDirectory ./release -Version 0.5.0 `
+  -BuildDirectory ./build -OutputDirectory ./release -Version 0.5.1 `
   -RepositoryUrl "https://github.com/SEU-USUARIO/LevelSync"
 ```
 

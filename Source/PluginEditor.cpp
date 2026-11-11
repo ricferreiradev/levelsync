@@ -75,8 +75,8 @@ LevelSyncAudioProcessorEditor::LevelSyncAudioProcessorEditor(LevelSyncAudioProce
     progressBar.setPercentageDisplay(true);
     processor.discardPendingTelemetry();
     setResizable(true, true);
-    setResizeLimits(900, 780, 1600, 1100);
-    setSize(1180, 820);
+    setResizeLimits(820, 640, 1400, 950);
+    setSize(1000, 700);
     startTimerHz(25);
 }
 
@@ -92,11 +92,11 @@ void LevelSyncAudioProcessorEditor::configureSlider(std::size_t index, const cha
     addAndMakeVisible(sliders[index]);
     addAndMakeVisible(labels[index]);
     sliders[index].setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
-    sliders[index].setTextBoxStyle(juce::Slider::TextBoxBelow, false, 82, 22);
+    sliders[index].setTextBoxStyle(juce::Slider::TextBoxBelow, false, 70, 19);
     sliders[index].setTextValueSuffix(suffix);
     labels[index].setText(label, juce::dontSendNotification);
     labels[index].setJustificationType(juce::Justification::centred);
-    labels[index].setFont(juce::FontOptions(12.0f));
+    labels[index].setFont(juce::FontOptions(10.5f));
     attachments[index] = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
         processor.parameters, id, sliders[index]);
 }
@@ -149,18 +149,18 @@ void LevelSyncAudioProcessorEditor::drawPanel(juce::Graphics& g, juce::Rectangle
 void LevelSyncAudioProcessorEditor::paint(juce::Graphics& g)
 {
     g.fillAll(juce::Colour(background));
-    auto bounds = getLocalBounds().reduced(16);
-    auto header = bounds.removeFromTop(48);
+    auto bounds = getLocalBounds().reduced(12);
+    auto header = bounds.removeFromTop(38);
     g.setColour(juce::Colour(text));
-    g.setFont(juce::FontOptions(27.0f, juce::Font::bold));
-    g.drawText("LevelSync", header.removeFromLeft(180), juce::Justification::centredLeft);
+    g.setFont(juce::FontOptions(24.0f, juce::Font::bold));
+    g.drawText("LevelSync", header.removeFromLeft(155), juce::Justification::centredLeft);
     g.setColour(juce::Colour(muted));
-    g.setFont(13.0f);
+    g.setFont(11.5f);
     g.drawText("VOCAL BALANCE PROCESSOR  |  K-WEIGHTED ESTIMATES",
                header, juce::Justification::centredLeft);
 
-    const int gap = 10;
-    auto monitor = bounds.removeFromTop(112);
+    const int gap = 8;
+    auto monitor = bounds.removeFromTop(90);
     const int cardWidth = (monitor.getWidth() - 4 * gap) / 5;
     auto voiceCard = monitor.removeFromLeft(cardWidth); monitor.removeFromLeft(gap);
     auto musicCard = monitor.removeFromLeft(cardWidth); monitor.removeFromLeft(gap);
@@ -173,11 +173,11 @@ void LevelSyncAudioProcessorEditor::paint(juce::Graphics& g)
     const auto drawValueCard = [&](juce::Rectangle<int> card, const juce::String& title,
                                    const juce::String& value, juce::Colour colour)
     {
-        auto a = card.reduced(12);
-        g.setColour(juce::Colour(muted)); g.setFont(12.0f);
-        g.drawText(title, a.removeFromTop(22), juce::Justification::centredLeft);
-        g.setColour(colour); g.setFont(juce::FontOptions(22.0f, juce::Font::bold));
-        g.drawText(value, a.removeFromTop(34), juce::Justification::centredLeft);
+        auto a = card.reduced(10);
+        g.setColour(juce::Colour(muted)); g.setFont(11.0f);
+        g.drawText(title, a.removeFromTop(18), juce::Justification::centredLeft);
+        g.setColour(colour); g.setFont(juce::FontOptions(19.0f, juce::Font::bold));
+        g.drawText(value, a.removeFromTop(28), juce::Justification::centredLeft);
     };
     const bool balanceValid = latestFrame.voiceValid && latestFrame.musicValid;
     drawValueCard(currentCard, "CURRENT BALANCE",
@@ -188,7 +188,7 @@ void LevelSyncAudioProcessorEditor::paint(juce::Graphics& g)
                   juce::Colour(vocal));
 
     bounds.removeFromTop(gap);
-    auto middle = bounds.removeFromTop(260);
+    auto middle = bounds.removeFromTop(190);
     auto graphPanel = middle.removeFromLeft(static_cast<int>(middle.getWidth() * 0.68f));
     middle.removeFromLeft(gap);
     auto learnPanel = middle;
@@ -201,9 +201,9 @@ void LevelSyncAudioProcessorEditor::paint(juce::Graphics& g)
     g.fillRoundedRectangle(learnPanel.toFloat(), 10.0f);
     g.setColour(learning ? juce::Colour(vocal) : juce::Colour(outline));
     g.drawRoundedRectangle(learnPanel.toFloat().reduced(0.5f), 10.0f, learning ? 2.0f : 1.0f);
-    auto learnText = learnPanel.reduced(14, 10);
-    g.setColour(juce::Colour(text)); g.setFont(juce::FontOptions(17.0f, juce::Font::bold));
-    g.drawText("Learn Balance", learnText.removeFromTop(25), juce::Justification::centredLeft);
+    auto learnText = learnPanel.reduced(12, 8);
+    g.setColour(juce::Colour(text)); g.setFont(juce::FontOptions(15.0f, juce::Font::bold));
+    g.drawText("Learn Balance", learnText.removeFromTop(21), juce::Justification::centredLeft);
     const auto stateName = [learnState]
     {
         switch (learnState)
@@ -217,25 +217,25 @@ void LevelSyncAudioProcessorEditor::paint(juce::Graphics& g)
         }
         return juce::String("Ready");
     }();
-    g.setColour(juce::Colour(muted)); g.setFont(13.0f);
-    g.drawText(stateName, learnText.removeFromTop(22), juce::Justification::centredLeft);
+    g.setColour(juce::Colour(muted)); g.setFont(11.5f);
+    g.drawText(stateName, learnText.removeFromTop(18), juce::Justification::centredLeft);
     g.drawText("Valid audio  " + juce::String(processor.getMeters().learnValidSeconds.load(), 1) + " / 5.0 s",
-               learnText.removeFromTop(22), juce::Justification::centredLeft);
+               learnText.removeFromTop(18), juce::Justification::centredLeft);
     g.setColour(processor.hasLearnedReference() ? juce::Colour(vocal) : juce::Colour(muted));
     g.drawText(processor.hasLearnedReference()
                    ? "Learned  " + juce::String(processor.getLearnedReferenceDb(), 1) + " dB"
                    : "No learned reference",
-               learnText.removeFromTop(22), juce::Justification::centredLeft);
+               learnText.removeFromTop(18), juce::Justification::centredLeft);
     if (learning && (!latestFrame.vocalActive || !latestFrame.musicValid))
     {
         g.setColour(juce::Colour(correction));
         g.drawText(!latestFrame.vocalActive ? "Waiting for vocal activity" : "Waiting for sidechain",
-                   learnText.removeFromTop(22), juce::Justification::centredLeft);
+                   learnText.removeFromTop(18), juce::Justification::centredLeft);
     }
 
     bounds.removeFromTop(gap);
     auto controls = bounds;
-    auto protectionPanel = controls.removeFromBottom(112);
+    auto protectionPanel = controls.removeFromBottom(130);
     controls.removeFromBottom(gap);
     auto basic = controls.removeFromLeft(static_cast<int>(controls.getWidth() * 0.30f));
     controls.removeFromLeft(gap);
@@ -344,14 +344,14 @@ void LevelSyncAudioProcessorEditor::paintOverChildren(juce::Graphics& g)
 
 void LevelSyncAudioProcessorEditor::resized()
 {
-    auto bounds = getLocalBounds().reduced(16);
-    auto header = bounds.removeFromTop(48);
+    auto bounds = getLocalBounds().reduced(12);
+    auto header = bounds.removeFromTop(38);
     enable.setBounds(header.removeFromRight(90).reduced(2, 8));
     diagnosticsButton.setBounds(header.removeFromRight(105).reduced(2, 8));
     licenseButton.setBounds(header.removeFromRight(78).reduced(2, 8));
 
-    const int gap = 10;
-    auto monitor = bounds.removeFromTop(112);
+    const int gap = 8;
+    auto monitor = bounds.removeFromTop(90);
     const int cardWidth = (monitor.getWidth() - 4 * gap) / 5;
     voiceMeter.setBounds(monitor.removeFromLeft(cardWidth)); monitor.removeFromLeft(gap);
     musicMeter.setBounds(monitor.removeFromLeft(cardWidth)); monitor.removeFromLeft(gap);
@@ -360,50 +360,50 @@ void LevelSyncAudioProcessorEditor::resized()
     gainMeter.setBounds(monitor);
 
     bounds.removeFromTop(gap);
-    auto middle = bounds.removeFromTop(260);
+    auto middle = bounds.removeFromTop(190);
     auto graphPanel = middle.removeFromLeft(static_cast<int>(middle.getWidth() * 0.68f));
     middle.removeFromLeft(gap);
     auto learnPanel = middle;
     history.setBounds(graphPanel);
-    auto learnControls = learnPanel.reduced(14, 10);
-    learnControls.removeFromTop(112);
-    progressBar.setBounds(learnControls.removeFromTop(24));
-    learnControls.removeFromTop(10);
-    auto buttons = learnControls.removeFromTop(32);
+    auto learnControls = learnPanel.reduced(12, 8);
+    learnControls.removeFromTop(82);
+    progressBar.setBounds(learnControls.removeFromTop(20));
+    learnControls.removeFromTop(6);
+    auto buttons = learnControls.removeFromTop(28);
     learnButton.setBounds(buttons.removeFromLeft((buttons.getWidth() - 8) / 2));
     buttons.removeFromLeft(8);
     cancelButton.setBounds(buttons);
 
     bounds.removeFromTop(gap);
     auto controls = bounds;
-    auto protectionPanel = controls.removeFromBottom(112);
+    auto protectionPanel = controls.removeFromBottom(130);
     controls.removeFromBottom(gap);
     auto basic = controls.removeFromLeft(static_cast<int>(controls.getWidth() * 0.30f));
     controls.removeFromLeft(gap);
     auto advanced = controls.removeFromLeft(static_cast<int>(controls.getWidth() * 0.61f));
     controls.removeFromLeft(gap);
     auto perceptualPanel = controls;
-    basic.reduce(10, 28);
-    advanced.reduce(10, 28);
+    basic.reduce(8, 24);
+    advanced.reduce(8, 24);
     const auto layoutKnobs = [this](juce::Rectangle<int> area, std::size_t first, std::size_t count)
     {
         const int width = area.getWidth() / static_cast<int>(count);
         for (std::size_t i = 0; i < count; ++i)
         {
             auto cell = area.removeFromLeft(width);
-            labels[first + i].setBounds(cell.removeFromTop(20));
+            labels[first + i].setBounds(cell.removeFromTop(17));
             sliders[first + i].setBounds(cell.reduced(2));
         }
     };
     layoutKnobs(basic, 0, 4);
     layoutKnobs(advanced, 4, 6);
-    perceptualPanel.reduce(10, 28);
-    perceptualMode.setBounds(perceptualPanel.removeFromTop(28));
-    perceptualPanel.removeFromTop(4);
+    perceptualPanel.reduce(8, 24);
+    perceptualMode.setBounds(perceptualPanel.removeFromTop(24));
+    perceptualPanel.removeFromTop(2);
     layoutKnobs(perceptualPanel, 10, 3);
 
-    protectionPanel.reduce(10, 28);
-    auto protectionToggle = protectionPanel.removeFromLeft(190);
+    protectionPanel.reduce(10, 26);
+    auto protectionToggle = protectionPanel.removeFromLeft(170);
     musicSilenceEnable.setBounds(protectionToggle.removeFromTop(28));
     layoutKnobs(protectionPanel, 13, 4);
 
